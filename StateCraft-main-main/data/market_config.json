@@ -1,0 +1,182 @@
+[
+  {
+    "id": "gov_school",
+    "name": "Government School",
+    "icon": "🏫",
+    "category": "Education",
+    "cost": 100,
+    "bonus": 100,
+    "description": "Foundational primary & secondary educational infrastructure providing universal basic literacy and digital classrooms."
+  },
+  {
+    "id": "university",
+    "name": "University",
+    "icon": "🎓",
+    "category": "Education",
+    "cost": 200,
+    "bonus": 200,
+    "description": "Premier higher education and research institution driving academic excellence, patents, and top-tier graduate talent."
+  },
+  {
+    "id": "phc",
+    "name": "Primary Health Centre",
+    "icon": "🏥",
+    "category": "Healthcare",
+    "cost": 100,
+    "bonus": 100,
+    "description": "Decentralized grassroots clinic delivering preventative medicine, maternal health, and immediate emergency triage."
+  },
+  {
+    "id": "district_hospital",
+    "name": "District Hospital",
+    "icon": "🏥",
+    "category": "Healthcare",
+    "cost": 180,
+    "bonus": 180,
+    "description": "Multi-specialty secondary healthcare institution with advanced intensive care, surgical theatres, and diagnostic labs."
+  },
+  {
+    "id": "highway_expansion",
+    "name": "Highway Expansion",
+    "icon": "🛣️",
+    "category": "Transport & Infrastructure",
+    "cost": 150,
+    "bonus": 150,
+    "description": "High-capacity multi-lane expressway network accelerating interstate commerce, freight logistics, and travel safety."
+  },
+  {
+    "id": "bus_network",
+    "name": "Public Bus Network",
+    "icon": "🚌",
+    "category": "Transport & Infrastructure",
+    "cost": 80,
+    "bonus": 80,
+    "description": "Accessible, eco-friendly municipal transit fleet interconnecting suburban clusters with central employment zones."
+  },
+  {
+    "id": "rapid_transit",
+    "name": "Rapid Transit System",
+    "icon": "🚇",
+    "category": "Transport & Infrastructure",
+    "cost": 250,
+    "bonus": 250,
+    "description": "High-speed grade-separated metro rail corridors slashing urban gridlock and carbon emissions across metropolitan hubs."
+  },
+  {
+    "id": "regional_airport",
+    "name": "Regional Airport",
+    "icon": "✈️",
+    "category": "Transport & Infrastructure",
+    "cost": 200,
+    "bonus": 200,
+    "description": "Commercial aviation terminal bridging regional economic hubs with global trade, tourism, and cargo networks."
+  },
+  {
+    "id": "water_treatment",
+    "name": "Water Treatment Plant",
+    "icon": "💧",
+    "category": "Water & Sanitation",
+    "cost": 120,
+    "bonus": 120,
+    "description": "State-of-the-art filtration and purification utility ensuring continuous potability and public health safety."
+  },
+  {
+    "id": "water_conservation",
+    "name": "Water Conservation System",
+    "icon": "🚰",
+    "category": "Water & Sanitation",
+    "cost": 100,
+    "bonus": 100,
+    "description": "Watershed replenishment, rainwater capture reservoirs, and groundwater recharging infrastructure."
+  },
+  {
+    "id": "solar_park",
+    "name": "Solar Power Park",
+    "icon": "⚡",
+    "category": "Energy",
+    "cost": 150,
+    "bonus": 150,
+    "description": "Utility-scale photovoltaic generation facility providing clean, decentralized energy to municipal and industrial grids."
+  },
+  {
+    "id": "renewable_grid",
+    "name": "Renewable Energy Grid",
+    "icon": "⚡",
+    "category": "Energy",
+    "cost": 200,
+    "bonus": 200,
+    "description": "Next-generation smart grid infrastructure integrating wind, solar, and battery storage with ultra-low transmission loss."
+  },
+  {
+    "id": "irrigation_network",
+    "name": "Irrigation Network",
+    "icon": "🌾",
+    "category": "Agriculture",
+    "cost": 120,
+    "bonus": 120,
+    "description": "Canal networks, drip irrigation distribution, and check dams stabilizing crop yields against drought and climate volatility."
+  },
+  {
+    "id": "agri_research",
+    "name": "Agricultural Research Centre",
+    "icon": "🌾",
+    "category": "Agriculture",
+    "cost": 150,
+    "bonus": 150,
+    "description": "High-yield seed genetics, soil biotechnology labs, and precision farming extension centers empowering cultivators."
+  },
+  {
+    "id": "industrial_park",
+    "name": "Industrial Park",
+    "icon": "🏭",
+    "category": "Industry & Economy",
+    "cost": 180,
+    "bonus": 180,
+    "description": "Dedicated plug-and-play manufacturing zone equipped with uninterrupted power, effluent disposal, and supply chain logistics."
+  },
+  {
+    "id": "startup_hub",
+    "name": "Startup & Innovation Hub",
+    "icon": "🚀",
+    "category": "Industry & Economy",
+    "cost": 150,
+    "bonus": 150,
+    "description": "Incubator campuses offering venture funding access, prototyping laboratories, mentorship, and high-tech intellectual property support."
+  },
+  {
+    "id": "waste_processing",
+    "name": "Waste Processing Plant",
+    "icon": "♻️",
+    "category": "Environment",
+    "cost": 100,
+    "bonus": 100,
+    "description": "Zero-landfill circular economy recycling and waste-to-energy complex drastically cutting environmental degradation."
+  },
+  {
+    "id": "flood_mgmt",
+    "name": "Flood Management System",
+    "icon": "🌊",
+    "category": "Disaster Management",
+    "cost": 120,
+    "bonus": 120,
+    "description": "Automated river barrages, subterranean stormwater arterial channels, and coastal seawalls protecting lives and assets."
+  },
+  {
+    "id": "affordable_housing",
+    "name": "Affordable Housing Project",
+    "icon": "🏠",
+    "category": "Housing & Social Development",
+    "cost": 150,
+    "bonus": 150,
+    "description": "Dignified, energy-efficient social housing complexes with piped utilities, sanitation, and community crèches."
+  },
+  {
+    "id": "smart_city",
+    "name": "Smart City System",
+    "icon": "🏙️",
+    "category": "Digital Development",
+    "cost": 250,
+    "bonus": 250,
+    "description": "Integrated Command and Control Centre (ICCC), IoT urban sensing networks, smart traffic signaling, and fiber broadband grids."
+  }
+]

@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant Portal — StateCraft Policy Simulation</title>
+  <meta name="description" content="Participant Team Portal for StateCraft simulation. Authenticate with credentials allocated by admin, view state governance criteria in read-only mode, and track live team points.">
+  <link rel="stylesheet" href="css/design-system.css?v=3.5">
+  <link rel="stylesheet" href="css/portal.css?v=3.5">
+  <style>
+    /* Direct Buzzer Styles - Guaranteed immediate rendering without cache delay */
+    .buzzer-hub-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      margin-bottom: 3.5rem;
+      scroll-margin-top: 4.5rem;
+    }
+
+    .participant-buzzer-card {
+      background: radial-gradient(circle at 50% 15%, rgba(35, 18, 40, 0.96), rgba(15, 23, 42, 0.98)) !important;
+      border: 2px solid rgba(239, 68, 68, 0.3) !important;
+      border-radius: 24px !important;
+      padding: 3rem 2rem !important;
+      text-align: center !important;
+      position: relative !important;
+      overflow: hidden !important;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .participant-buzzer-card.active-buzzer {
+      border-color: rgba(239, 68, 68, 0.85) !important;
+      box-shadow: 0 0 70px rgba(239, 68, 68, 0.35), 0 20px 60px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .participant-buzzer-card.buzzed-success {
+      border-color: rgba(16, 185, 129, 0.85) !important;
+      box-shadow: 0 0 70px rgba(16, 185, 129, 0.35), 0 20px 60px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .buzzer-card-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* 3D Round Red Animated Buzzer Wrapper */
+    .buzzer-button-wrapper {
+      margin: 3.5rem auto 2.5rem !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      position: relative !important;
+      width: 320px !important;
+      height: 320px !important;
+    }
+
+    /* Animated Radar Shockwave Rings */
+    .buzzer-radar-ring {
+      position: absolute !important;
+      border-radius: 50% !important;
+      pointer-events: none !important;
+      opacity: 0;
+      display: none;
+    }
+
+    .active-buzzer .buzzer-radar-ring {
+      display: block !important;
+    }
+
+    .buzzer-radar-ring.ring-1 {
+      animation: buzzer-radar 2.4s infinite cubic-bezier(0.1, 0.7, 0.1, 1) !important;
+    }
+    .buzzer-radar-ring.ring-2 {
+      animation: buzzer-radar 2.4s infinite 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) !important;
+    }
+    .buzzer-radar-ring.ring-3 {
+      animation: buzzer-radar 2.4s infinite 1.6s cubic-bezier(0.1, 0.7, 0.1, 1) !important;
+    }
+
+    @keyframes buzzer-radar {
+      0% {
+        width: 230px;
+        height: 230px;
+        opacity: 0.9;
+        border: 3px solid rgba(255, 45, 85, 0.95);
+        box-shadow: 0 0 25px rgba(255, 45, 85, 0.8);
+        transform: scale(0.98);
+      }
+      50% {
+        opacity: 0.5;
+      }
+      100% {
+        width: 440px;
+        height: 440px;
+        opacity: 0;
+        border: 1px solid rgba(255, 45, 85, 0);
+        box-shadow: 0 0 50px rgba(255, 45, 85, 0);
+        transform: scale(1.45);
+      }
+    }
+
+    /* Heavy Industrial Base Pedestal */
+    .buzzer-pedestal {
+      position: absolute !important;
+      width: 272px !important;
+      height: 272px !important;
+      border-radius: 50% !important;
+      background: radial-gradient(circle at 50% 50%, #1E293B 0%, #0F172A 70%, #080C14 100%) !important;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.15) !important;
+      border: 4px solid #334155 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      pointer-events: none !important;
+      z-index: 1 !important;
+    }
+
+    .buzzer-pedestal-bezel {
+      width: 250px !important;
+      height: 250px !important;
+      border-radius: 50% !important;
+      background: linear-gradient(135deg, #475569 0%, #1E293B 50%, #0F172A 100%) !important;
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(255, 255, 255, 0.1) !important;
+      border: 2px solid rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* THE RED ROUND 3D BUZZER BUTTON */
+    .buzzer-btn {
+      width: 228px !important;
+      height: 228px !important;
+      border-radius: 50% !important;
+      border: none !important;
+      cursor: pointer !important;
+      outline: none !important;
+      position: relative !important;
+      z-index: 2 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease !important;
+      padding: 0 !important;
+    }
+
+    /* Gloss Specular Highlight Curve */
+    .buzzer-gloss-highlight {
+      position: absolute !important;
+      top: 12px !important;
+      left: 32px !important;
+      width: 164px !important;
+      height: 75px !important;
+      border-radius: 120px / 55px !important;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.2) 60%, transparent 100%) !important;
+      pointer-events: none !important;
+      filter: blur(0.5px) !important;
+      z-index: 3 !important;
+    }
+
+    /* State: RED ROUND ACTIVE ANIMATED BUZZER */
+    .buzzer-btn.buzzer-active {
+      background: radial-gradient(circle at 40% 30%, #FF5A78 0%, #E11D48 35%, #BE123C 70%, #881337 100%) !important;
+      color: #FFFFFF !important;
+      box-shadow: 
+        0 16px 0 #590B20,
+        0 22px 40px rgba(0, 0, 0, 0.8),
+        0 0 45px rgba(244, 63, 94, 0.65),
+        inset 0 -10px 18px rgba(0, 0, 0, 0.5),
+        inset 0 4px 8px rgba(255, 255, 255, 0.65) !important;
+      animation: red-buzzer-alive 1.6s infinite ease-in-out !important;
+    }
+
+    .buzzer-btn.buzzer-active:hover {
+      transform: translateY(-4px) scale(1.02) !important;
+      box-shadow: 
+        0 20px 0 #590B20,
+        0 26px 50px rgba(0, 0, 0, 0.85),
+        0 0 65px rgba(244, 63, 94, 0.9),
+        inset 0 -10px 18px rgba(0, 0, 0, 0.5),
+        inset 0 5px 12px rgba(255, 255, 255, 0.8) !important;
+    }
+
+    .buzzer-btn.buzzer-active:active,
+    .buzzer-btn.pressed-down {
+      transform: translateY(12px) scale(0.97) !important;
+      box-shadow: 
+        0 4px 0 #590B20,
+        0 8px 18px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(244, 63, 94, 0.4),
+        inset 0 4px 14px rgba(0, 0, 0, 0.7) !important;
+    }
+
+    @keyframes red-buzzer-alive {
+      0%, 100% {
+        box-shadow: 
+          0 16px 0 #590B20,
+          0 22px 40px rgba(0, 0, 0, 0.8),
+          0 0 40px rgba(244, 63, 94, 0.6),
+          inset 0 -10px 18px rgba(0, 0, 0, 0.5),
+          inset 0 4px 8px rgba(255, 255, 255, 0.65);
+      }
+      50% {
+        box-shadow: 
+          0 16px 0 #590B20,
+          0 26px 55px rgba(0, 0, 0, 0.85),
+          0 0 85px rgba(255, 77, 109, 0.95),
+          inset 0 -10px 18px rgba(0, 0, 0, 0.4),
+          inset 0 6px 14px rgba(255, 255, 255, 0.9);
+      }
+    }
+
+    /* State: RED ROUND LOCKED (Disabled) */
+    .buzzer-btn.buzzer-locked {
+      background: radial-gradient(circle at 40% 30%, #475569 0%, #334155 45%, #1E293B 80%, #0F172A 100%) !important;
+      color: #94A3B8 !important;
+      box-shadow: 
+        0 12px 0 #080C14,
+        0 16px 30px rgba(0, 0, 0, 0.7),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.5),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2) !important;
+      cursor: not-allowed !important;
+      filter: saturate(0.4) !important;
+    }
+
+    .buzzer-btn.buzzer-locked .buzzer-gloss-highlight {
+      opacity: 0.35 !important;
+    }
+
+    /* State: BUZZED SUCCESS */
+    .buzzer-btn.buzzer-buzzed {
+      background: radial-gradient(circle at 40% 30%, #34D399 0%, #10B981 40%, #059669 75%, #064E3B 100%) !important;
+      color: #FFFFFF !important;
+      box-shadow: 
+        0 10px 0 #064E3B,
+        0 18px 35px rgba(0, 0, 0, 0.75),
+        0 0 50px rgba(16, 185, 129, 0.6),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.4),
+        inset 0 3px 6px rgba(255, 255, 255, 0.7) !important;
+      cursor: default !important;
+    }
+
+    .buzzer-icon {
+      font-size: 3.6rem !important;
+      line-height: 1 !important;
+      margin-bottom: 0.25rem !important;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4)) !important;
+      z-index: 4 !important;
+    }
+
+    .buzzer-label {
+      font-size: 1.25rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.06em !important;
+      text-transform: uppercase !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+      z-index: 4 !important;
+    }
+
+    .buzzer-sublabel {
+      font-size: 0.75rem !important;
+      font-weight: 700 !important;
+      opacity: 0.92 !important;
+      letter-spacing: 0.03em !important;
+      z-index: 4 !important;
+    }
+
+    .keyboard-hint {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+      background: rgba(15, 23, 42, 0.8) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 9999px !important;
+      padding: 0.45rem 1.15rem !important;
+      font-size: 0.84rem !important;
+      color: #CBD5E1 !important;
+      margin-top: 0.75rem !important;
+    }
+
+    .kbd-key {
+      background: linear-gradient(180deg, #334155 0%, #1E293B 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border-bottom: 2px solid #0F172A !important;
+      border-radius: 4px !important;
+      padding: 0.15rem 0.55rem !important;
+      font-family: monospace !important;
+      font-size: 0.75rem !important;
+      font-weight: 700 !important;
+      color: #F8FAFC !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .status-pill-pulse {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.45rem !important;
+      font-size: 0.78rem !important;
+      font-weight: 700 !important;
+      padding: 0.3rem 0.75rem !important;
+      border-radius: 9999px !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.04em !important;
+    }
+
+    .status-pill-open {
+      background: rgba(239, 68, 68, 0.18) !important;
+      border: 1px solid rgba(239, 68, 68, 0.5) !important;
+      color: #FDA4AF !important;
+    }
+
+    .status-pill-locked {
+      background: rgba(100, 116, 139, 0.15) !important;
+      border: 1px solid rgba(100, 116, 139, 0.3) !important;
+      color: #94A3B8 !important;
+    }
+
+    .pulse-dot-red {
+      width: 8px !important;
+      height: 8px !important;
+      border-radius: 50% !important;
+      background: #EF4444 !important;
+      box-shadow: 0 0 10px #EF4444 !important;
+      animation: pulse-radar 1.2s infinite ease-in-out !important;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- VIEW 1: Participant Login Screen -->
+  <div id="participant-login-view" class="login-container">
+    <div class="login-card fade-in">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div class="brand-icon" style="width: 52px; height: 52px; font-size: 1.75rem; margin: 0 auto 1rem;">🏛️</div>
+        <h2 style="font-size: 1.75rem; margin-bottom: 0.35rem;">Participant Portal</h2>
+        <p style="font-size: 0.88rem;">Enter the credentials allocated to your team by the simulation administrator.</p>
+      </div>
+
+      <form onsubmit="handleParticipantLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="login-team-name">Team Name</label>
+          <input type="text" id="login-team-name" class="form-input" placeholder="e.g. Chanakya Strategists" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">Team Access Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Allocated by Admin" required>
+        </div>
+
+        <div id="login-error-msg" style="color: var(--accent-rose); font-size: 0.85rem; margin-bottom: 1rem; display: none;"></div>
+
+        <button type="submit" id="btn-participant-login" class="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 1.25rem;">
+          Enter Team Portal →
+        </button>
+      </form>
+
+      <!-- Demo Team Quick Select -->
+      <div id="demo-team-chips" style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem; margin-top: 0.5rem;">
+        <!-- Populated via participant.js -->
+      </div>
+
+      <div style="text-align: center; margin-top: 1.5rem; font-size: 0.82rem;">
+        <a href="index.html" style="color: var(--text-muted);">← Return to Gateway</a> • 
+        <a href="admin.html" style="color: var(--primary);">Admin Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: Authenticated Team Dashboard -->
+  <div id="participant-dashboard-view" style="display: none;">
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="brand-badge">
+            <div class="brand-icon">🏛️</div>
+            <span>StateCraft</span>
+          </a>
+          <span class="badge badge-emerald">Team Console</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2" style="font-size: 0.82rem; color: var(--text-secondary);">
+            <span class="live-pulse"></span>
+            <span>Live Admin Sync</span>
+          </div>
+          <a href="#section-market" class="btn btn-secondary btn-sm flex items-center gap-2" style="font-weight: 700; border-color: rgba(99, 102, 241, 0.4); background: rgba(99, 102, 241, 0.12); color: #C7D2FE;">
+            <span>🏗️ Infrastructure Market</span>
+            <span id="participant-nav-market-badge" class="badge badge-indigo" style="font-size: 0.72rem; padding: 0.15rem 0.45rem;">20 Options</span>
+          </a>
+          <a href="#round1-buzzer-session" class="btn btn-secondary btn-sm flex items-center gap-2" style="font-weight: 600;">
+            <span>⚡ Round 1 Buzzer</span>
+            <span id="participant-nav-buzzer-badge" class="badge badge-needs-attention">LOCKED</span>
+          </a>
+          <button class="btn btn-secondary btn-sm" onclick="handleParticipantLogout()">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+      <!-- Hero Briefing Header -->
+      <section class="participant-hero">
+        <div class="team-badge-hero">
+          <div id="state-emblem-badge" class="state-emblem-circle">
+            --
+          </div>
+          <div>
+            <div class="team-meta-title">Registered Participant Delegation</div>
+            <h1 id="team-name-title" class="team-name-hero">Team Name</h1>
+            <div id="allocated-state-display-box" style="margin-top: 0.35rem;">
+              <!-- Dynamically populated with allocated state -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Points Scorebox -->
+        <div class="points-score-box" style="min-width: 300px;">
+          <div class="flex items-center justify-between" style="gap: 1.25rem;">
+            <div>
+              <div class="points-score-label">💎 Available Points</div>
+              <div id="team-live-points-display" class="points-score-val" style="color: #38BDF8;">0</div>
+            </div>
+            <div style="text-align: right; border-left: 1px solid var(--border-subtle); padding-left: 1.25rem;">
+              <div class="points-score-label">🏗️ Development Score</div>
+              <div id="team-dev-score-display" class="points-score-val" style="color: #10B981;">0</div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between" style="font-size: 0.78rem; margin-top: 0.45rem;">
+            <span style="color: #38BDF8; font-weight: 600;">Spendable Resource</span>
+            <span style="color: #34D399; font-weight: 600;" id="team-assets-count-display">0 Assets Commissioned</span>
+          </div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Invest available points in the Infrastructure Market below
+          </div>
+        </div>
+      </section>
+
+      <!-- Alert if no state allocated yet -->
+      <div id="no-state-alert" class="card" style="display: none; border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.08); margin-bottom: 2rem;">
+        <div class="flex items-center gap-3">
+          <div style="font-size: 1.5rem;">⏳</div>
+          <div>
+            <h4 style="color: #FBBF24; margin-bottom: 0.2rem;">Awaiting State Allocation</h4>
+            <p style="font-size: 0.88rem; color: #FDE68A; margin: 0;">
+              The simulation administrator has not yet assigned a state to your team. Once allocated in the Admin Portal, your state's 8 criteria particulars will automatically appear here in real time.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- 1. ALLOCATED STATE GOVERNANCE CRITERIA -->
+      <!-- ================================================================= -->
+      <section id="section-state-criteria" style="margin-top: 1rem; margin-bottom: 3.5rem;">
+        <div class="flex items-center justify-between" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <h3>Allocated State Governance Criteria</h3>
+            <p style="font-size: 0.88rem;">Official baseline figures and administrative responsibilities allocated by the simulation admin.</p>
+          </div>
+          <div class="badge badge-indigo" style="font-size: 0.75rem;">
+            🔒 Locked by Administrator • Read-Only
+          </div>
+        </div>
+
+        <!-- 8 Criteria Detailed Grid -->
+        <div id="criteria-cards-container" class="criteria-dashboard-grid">
+          <!-- Dynamically rendered 8 criteria cards -->
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- 2. ROUND 1 RAPID RESPONSE BUZZER SESSION (AFTER STATE CRITERIA)   -->
+      <!-- ================================================================= -->
+      <section id="round1-buzzer-session" class="buzzer-hub-container fade-in">
+        <div id="participant-buzzer-card" class="participant-buzzer-card">
+          <div class="buzzer-card-inner">
+            <!-- Header status pill -->
+            <div class="flex items-center justify-between" style="margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div class="flex items-center gap-2">
+                <span class="badge badge-rose" style="font-size: 0.82rem; font-weight: 800; padding: 0.25rem 0.65rem;">⚡ Round 1</span>
+                <span id="buzzer-round-title" style="font-weight: 800; font-size: 1.1rem; color: var(--text-primary);">
+                  Rapid Response Buzzer Arena
+                </span>
+              </div>
+              <div id="participant-buzzer-status-badge">
+                <span class="status-pill-pulse status-pill-locked">
+                  <span>🔒</span>
+                  <span>Buzzer Locked</span>
+                </span>
+              </div>
+            </div>
+
+            <h2 id="buzzer-main-prompt" style="font-size: 1.95rem; margin-bottom: 0.5rem; letter-spacing: -0.01em;">
+              Awaiting Admin Activation
+            </h2>
+            <p id="buzzer-sub-prompt" style="font-size: 0.95rem; color: var(--text-muted); max-width: 580px; margin: 0 auto;">
+              The buzzer is locked by the simulation administrator. When enabled for Round 1, this red round buzzer will activate and animate instantly!
+            </p>
+
+            <!-- 3D Round Red Animated Buzzer Button -->
+            <div class="buzzer-button-wrapper">
+              <!-- Outward Animated Radar Shockwave Rings -->
+              <div class="buzzer-radar-ring ring-1"></div>
+              <div class="buzzer-radar-ring ring-2"></div>
+              <div class="buzzer-radar-ring ring-3"></div>
+
+              <!-- Base Pedestal with Bezel -->
+              <div class="buzzer-pedestal">
+                <div class="buzzer-pedestal-bezel"></div>
+              </div>
+
+              <!-- Perfectly Round Red 3D Domed Buzzer Button -->
+              <button id="btn-participant-buzz" class="buzzer-btn buzzer-locked" onclick="handleParticipantBuzzPress()" disabled title="Press Buzzer">
+                <!-- Gloss Specular Reflection Highlight -->
+                <div class="buzzer-gloss-highlight"></div>
+
+                <div id="buzzer-btn-icon" class="buzzer-icon">🚨</div>
+                <div id="buzzer-btn-label" class="buzzer-label">LOCKED</div>
+                <div id="buzzer-btn-sublabel" class="buzzer-sublabel">Waiting for Admin</div>
+              </button>
+            </div>
+
+            <!-- Keyboard shortcut indicator -->
+            <div id="buzzer-shortcut-hint" class="keyboard-hint" style="display: none;">
+              <span>Tip: Press </span>
+              <kbd class="kbd-key">SPACEBAR</kbd>
+              <span> or click the red buzzer to buzz immediately!</span>
+            </div>
+
+            <!-- Confirmation message after buzz -->
+            <div id="buzzer-confirmation-banner" style="display: none; margin-top: 1.5rem; padding: 1.25rem 1.75rem; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: var(--radius-lg);">
+              <div class="flex items-center justify-center gap-2" style="color: #34D399; font-weight: 700; font-size: 1.2rem; margin-bottom: 0.35rem;">
+                <span>✅</span>
+                <span id="buzzer-confirmation-text">Buzz Successfully Recorded!</span>
+              </div>
+              <p id="buzzer-confirmation-subtext" style="font-size: 0.88rem; color: #A7F3D0; margin: 0;">
+                Your click was received and queued with the administrator. Waiting for admin reveal.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVEALED LEADERBOARD (Displayed only when Admin turns on Display Order to Participants) -->
+        <div id="participant-revealed-order-card" class="card fade-in" style="display: none; border-color: rgba(99, 102, 241, 0.4); background: rgba(15, 23, 42, 0.95); margin-top: 1.5rem;">
+          <div class="flex items-center justify-between" style="margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <div class="flex items-center gap-2" style="margin-bottom: 0.25rem;">
+                <span class="badge badge-gold">Official Standings</span>
+                <h3 style="margin: 0;">Round 1 Buzzer Arrival Order</h3>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+                Revealed by Simulation Administrator. Chronological arrival order of participant buzzes.
+              </p>
+            </div>
+            <span class="badge badge-indigo">Official Live Order</span>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="buzzer-table">
+              <thead>
+                <tr>
+                  <th style="width: 80px;">Rank</th>
+                  <th>Team Name</th>
+                  <th>Allocated State</th>
+                  <th>Time Buzzed</th>
+                  <th>Reaction</th>
+                </tr>
+              </thead>
+              <tbody id="participant-revealed-queue-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- 3. INFRASTRUCTURE INVESTMENT MARKET (INDIA 2050)                  -->
+      <!-- ================================================================= -->
+      <section id="section-market" class="market-section fade-in" style="margin-top: 3.5rem; margin-bottom: 3.5rem; scroll-margin-top: 4.5rem;">
+        <!-- Grand Floating Market Header Card -->
+        <div class="market-hero-card">
+          <div class="market-hero-badge">
+            <span class="pulse-dot-indigo"></span>
+            <span>STATECRAFT: INDIA 2050</span>
+          </div>
+          <h2 class="market-hero-title">INFRASTRUCTURE INVESTMENT</h2>
+          <p class="market-hero-subtitle">
+            Build your state. Invest wisely. Shape the future.
+          </p>
+
+          <!-- High-Contrast Projector-Ready Top Balance Bar -->
+          <div class="market-balance-bar">
+            <div class="market-balance-tile tile-available">
+              <div class="tile-icon">💎</div>
+              <div>
+                <div class="tile-label">AVAILABLE POINTS</div>
+                <div id="market-available-points" class="tile-value value-points">0</div>
+                <div class="tile-note">Spendable across 20 projects</div>
+              </div>
+            </div>
+
+            <div class="market-balance-tile tile-dev">
+              <div class="tile-icon">🏗️</div>
+              <div>
+                <div class="tile-label">DEVELOPMENT SCORE</div>
+                <div id="market-dev-score" class="tile-value value-dev">0</div>
+                <div class="tile-note">Total infrastructure output</div>
+              </div>
+            </div>
+
+            <div class="market-balance-tile tile-assets">
+              <div class="tile-icon">🏛️</div>
+              <div>
+                <div class="tile-label">COMMISSIONED ASSETS</div>
+                <div id="market-assets-count" class="tile-value value-assets">0 / 20</div>
+                <div class="tile-note">Active public works</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sector / Category Scores Progress Breakdown -->
+          <div class="market-sectors-wrapper">
+            <div class="flex items-center justify-between" style="margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #94A3B8;">
+                State Sector Development Breakdown (11 Categories)
+              </span>
+              <span class="badge badge-indigo" style="font-size: 0.72rem;">Live Metrics</span>
+            </div>
+            <div id="market-category-chips-container" class="category-chips-grid">
+              <!-- Dynamically populated 11 categories -->
+            </div>
+          </div>
+        </div>
+
+        <!-- YOUR STATE'S INFRASTRUCTURE SHOWCASE -->
+        <div class="market-sub-section" style="margin-top: 2.5rem;">
+          <div class="flex items-center justify-between" style="margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="badge badge-emerald" style="font-weight: 800;">✓ Portfolio</span>
+                <h3 style="margin: 0; font-size: 1.35rem;">YOUR STATE'S INFRASTRUCTURE</h3>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Public assets successfully financed and commissioned by your delegation.
+              </p>
+            </div>
+            <div id="purchased-counter-badge" class="badge badge-indigo" style="font-size: 0.8rem; font-weight: 700; padding: 0.25rem 0.75rem;">
+              0 Assets Built
+            </div>
+          </div>
+
+          <div id="purchased-infrastructure-container">
+            <!-- Dynamically populated or empty banner -->
+          </div>
+        </div>
+
+        <!-- INFRASTRUCTURE MARKETPLACE - 20 FLOATING CARDS -->
+        <div class="market-sub-section" style="margin-top: 3rem;">
+          <div class="flex items-center justify-between" style="margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="badge badge-indigo" style="font-weight: 800;">Marketplace</span>
+                <h3 style="margin: 0; font-size: 1.35rem;">AVAILABLE INFRASTRUCTURE PROJECTS</h3>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+                Select an infrastructure project to invest your available points. Each investment boosts specific sector metrics.
+              </p>
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="flex items-center gap-2" style="flex-wrap: wrap;" id="market-filter-pills">
+              <button class="filter-pill active" onclick="filterMarketCategory('all')">All (20)</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Education')">Education</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Healthcare')">Healthcare</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Transport & Infrastructure')">Transport</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Water & Sanitation')">Water</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Energy')">Energy</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Agriculture')">Agriculture</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Industry & Economy')">Industry</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Environment')">Environment</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Disaster Management')">Disaster Mgmt</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Housing & Social Development')">Housing</button>
+              <button class="filter-pill" onclick="filterMarketCategory('Digital Development')">Digital</button>
+            </div>
+          </div>
+
+          <!-- 20 Floating Cards Container -->
+          <div id="market-cards-grid" class="market-cards-grid">
+            <!-- Dynamically populated 20 floating cards -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- 4. TEAM POINT LEDGER & ADJUDICATOR HISTORY                        -->
+      <!-- ================================================================= -->
+      <section id="section-ledger" class="point-logs-section fade-in" style="margin-top: 3.5rem;">
+        <div class="flex items-center justify-between" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <h3>Evaluation Ledger & Adjudication Logs</h3>
+            <p style="font-size: 0.85rem;">Transparent chronological breakdown of points awarded or adjusted by the Admin team.</p>
+          </div>
+          <span class="badge badge-gold">Official Score History</span>
+        </div>
+
+        <div id="participant-point-logs-container">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal: CONFIRM INVESTMENT? -->
+  <div id="modal-confirm-purchase" class="modal-backdrop">
+    <div class="modal-card modal-investment-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="flex items-center gap-3">
+          <div id="modal-buy-icon" style="font-size: 2.2rem; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">🏗️</div>
+          <div>
+            <span class="badge badge-gold" style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase;">Infrastructure Investment</span>
+            <h3 id="modal-buy-title" style="margin: 0.15rem 0 0; font-size: 1.4rem;">CONFIRM INVESTMENT?</h3>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closePurchaseModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+          Confirm the capital allocation below. Points are authoritatively deducted and development points permanently credited to your state.
+        </p>
+
+        <!-- Structured Investment Breakdown matching prompt format -->
+        <div class="investment-summary-box">
+          <div class="summary-row">
+            <span class="summary-label">Infrastructure:</span>
+            <strong id="modal-item-name" class="summary-val highlight-blue">--</strong>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Development Category:</span>
+            <span id="modal-item-category" class="badge badge-indigo">--</span>
+          </div>
+          <div class="summary-row divider-row">
+            <span class="summary-label">Cost:</span>
+            <strong id="modal-item-cost" class="summary-val highlight-gold" style="font-size: 1.15rem;">-- points</strong>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Current Available Points:</span>
+            <span id="modal-current-points" class="summary-val">--</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Points After Purchase:</span>
+            <strong id="modal-after-points" class="summary-val highlight-emerald">--</strong>
+          </div>
+          <div class="summary-row highlight-gain-box">
+            <span class="summary-label" id="modal-bonus-label" style="color: #34D399; font-weight: 700;">Development Gain:</span>
+            <strong id="modal-item-bonus" class="summary-val" style="color: #34D399; font-size: 1.2rem;">+--</strong>
+          </div>
+        </div>
+
+        <div id="modal-buy-error" style="display: none; margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; color: #F87171; font-size: 0.88rem; font-weight: 700;">
+          ⚠️ Insufficient points to purchase this infrastructure.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closePurchaseModal()">[CANCEL]</button>
+        <button id="btn-confirm-investment" class="btn btn-primary" onclick="executeInfrastructurePurchase()">
+          [CONFIRM PURCHASE]
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: INVESTMENT SUCCESSFUL -->
+  <div id="modal-purchase-success" class="modal-backdrop">
+    <div class="modal-card modal-investment-card" style="max-width: 480px; text-align: center;">
+      <div style="padding: 1rem 0 0.5rem;">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: rgba(16, 185, 129, 0.2); border: 2px solid #10B981; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 2.4rem; box-shadow: 0 0 35px rgba(16, 185, 129, 0.4);">
+          <span id="success-modal-icon">🏛️</span>
+        </div>
+        <span class="badge badge-emerald" style="font-size: 0.82rem; font-weight: 800; letter-spacing: 0.05em; padding: 0.35rem 0.85rem;">
+          INVESTMENT SUCCESSFUL
+        </span>
+        <h2 id="success-modal-title" style="margin: 0.85rem 0 0.5rem; font-size: 1.6rem; color: #F8FAFC;">
+          Asset Commissioned!
+        </h2>
+        <p id="success-modal-desc" style="font-size: 1rem; color: #CBD5E1; margin: 0 auto 1.5rem; max-width: 380px;">
+          District Hospital has been added to your state's infrastructure.
+        </p>
+        <div class="investment-summary-box" style="margin-bottom: 1.5rem; text-align: left;">
+          <div class="summary-row">
+            <span class="summary-label">Points Deducted:</span>
+            <span id="success-cost-deducted" style="color: #F87171; font-weight: 700;">-0 pts</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Development Points Added:</span>
+            <span id="success-bonus-added" style="color: #34D399; font-weight: 700;">+0 pts</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">New Available Balance:</span>
+            <span id="success-new-balance" style="color: #38BDF8; font-weight: 700;">0 pts</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="closeSuccessModal()">
+          Continue Simulation →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/common.js?v=4.0"></script>
+  <script src="js/participant.js?v=4.0"></script>
+</body>
+</html>

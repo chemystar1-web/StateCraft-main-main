@@ -1,0 +1,2182 @@
+import json
+import os
+
+states_data = [
+    {
+        "id": "andhra_pradesh",
+        "name": "Andhra Pradesh",
+        "capital": "Amaravati",
+        "region": "South India",
+        "color": "#3B82F6",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "67.4%",
+                "metric": "Literacy Rate",
+                "subValue": "Higher Edu GER: 37.2%",
+                "status": "Moderate",
+                "responsibility": "Administering universal secondary schooling, 'Nadu-Nedu' school infrastructure overhaul, and technical university expansion across coastal districts."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "69.9 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "IMR: 24 per 1,000 live births",
+                "status": "Good",
+                "responsibility": "Operating YSR Aarogyasri universal health coverage, village health clinics, and tertiary medical colleges in tier-2 cities."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "138,400 km",
+                "metric": "Total Road Network",
+                "subValue": "Visakhapatnam & Krishnapatnam Deep-sea Ports",
+                "status": "Good",
+                "responsibility": "Expanding coastal economic corridor (VCIC), high-speed freight access, port connectivity, and Bhogapuram Greenfield International Airport."
+            },
+            "population": {
+                "label": "Population",
+                "value": "53.2 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 326 / km² | Urban: 29.6%",
+                "status": "Moderate",
+                "responsibility": "Managing demographic balance, welfare disbursement systems, and urban migration along coastal urban centers."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹3.85 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Rank 1 in DPIIT Ease of Doing Business",
+                "status": "Excellent",
+                "responsibility": "Fostering electronic manufacturing clusters (Sri City), automobile hubs, pharmaceutical manufacturing in Vizag, and renewable energy parks."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "68.5 / 100",
+                "metric": "Safety Index",
+                "subValue": "Police: 142 per lakh pop | Disha SOS Response",
+                "status": "Good",
+                "responsibility": "Maintaining coastal marine policing, cybersecurity crime cells, and rapid-response women safety initiatives."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,19,518 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "+11.4% YoY Growth",
+                "status": "Good",
+                "responsibility": "Driving agricultural processing, IT services in Visakhapatnam, and rural household income growth."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "33.2%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹4.42 Lakh Cr | Fiscal Deficit: 3.4%",
+                "status": "Needs Attention",
+                "responsibility": "Managing public borrowing ceilings, restructuring high-cost loans, and rationalizing welfare subsidies."
+            }
+        }
+    },
+    {
+        "id": "arunachal_pradesh",
+        "name": "Arunachal Pradesh",
+        "capital": "Itanagar",
+        "region": "Northeast India",
+        "color": "#10B981",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "66.9%",
+                "metric": "Literacy Rate",
+                "subValue": "Primary Teacher-Pupil Ratio: 1:16",
+                "status": "Moderate",
+                "responsibility": "Overcoming rugged terrain to provide border residential schools, vocational training, and tribal scholarship programs."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "52.4 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Telemedicine Coverage: 68% of PHCs",
+                "status": "Moderate",
+                "responsibility": "Deploying drone-based medical deliveries, helicopter air-ambulance links, and upgrading district hospitals in remote valleys."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "24,800 km",
+                "metric": "Road Network",
+                "subValue": "Trans-Arunachal Highway & Sela Tunnel",
+                "status": "Good",
+                "responsibility": "Strategic border road engineering, hydropower transmission corridors, and Donyi Polo Greenfield Airport connectivity."
+            },
+            "population": {
+                "label": "Population",
+                "value": "1.57 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 17 / km² | Tribal: 68.8%",
+                "status": "Good",
+                "responsibility": "Preserving indigenous tribal heritage, forest community rights, and sustainable eco-settlements."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹32,500 Cr",
+                "metric": "Industrial Output",
+                "subValue": "Hydro Potential: 50,000 MW | Organic Farming",
+                "status": "Moderate",
+                "responsibility": "Harnessing run-of-the-river clean hydro energy, kiwifruit & horticulture processing, and sustainable eco-tourism."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "78.2 / 100",
+                "metric": "Safety Index",
+                "subValue": "Lowest Violent Crime Rate in Region",
+                "status": "Excellent",
+                "responsibility": "Border security collaboration with paramilitary forces, community village councils (Kebang), and anti-poaching wildlife enforcement."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,05,400 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "High central grant devolution",
+                "status": "Good",
+                "responsibility": "Diversifying beyond government expenditure into horticultural exports and handicraft cooperatives."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "41.8%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹19,800 Cr | Fiscal Deficit: 2.8%",
+                "status": "Moderate",
+                "responsibility": "Maintaining debt sustainability supported by Special Category State capital assistance grants."
+            }
+        }
+    },
+    {
+        "id": "assam",
+        "name": "Assam",
+        "capital": "Dispur",
+        "region": "Northeast India",
+        "color": "#F59E0B",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "73.2%",
+                "metric": "Literacy Rate",
+                "subValue": "GER Higher Edu: 17.3% | 24 State Universities",
+                "status": "Moderate",
+                "responsibility": "Expansion of engineering and medical colleges in Upper and Lower Assam, digital classroom programs, and multilingual textbooks."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "51.6 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "MMR: 195 per lakh | Boat Clinics in Brahmaputra",
+                "status": "Needs Attention",
+                "responsibility": "Addressing maternal mortality in tea garden communities, flood-season mobile medical units, and super-specialty hospital hubs."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "69,000 km",
+                "metric": "Road Network",
+                "subValue": "Dhola-Sadiya & Bogibeel Bridges | Guwahati Cargo Port",
+                "status": "Good",
+                "responsibility": "Brahmaputra National Waterway-2 logistics, railway electrification, and international airport hub expansion at Borjhar."
+            },
+            "population": {
+                "label": "Population",
+                "value": "35.6 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 454 / km² | Urban: 15.3%",
+                "status": "Moderate",
+                "responsibility": "Managing annual flood displacements, NRC administrative systems, and riverine erosion rehabilitation."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹1.48 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Produces 52% of India's Tea | Digboi & Numaligarh Refineries",
+                "status": "Good",
+                "responsibility": "Semiconductor packaging facility at Jagiroad, petrochemical downstream units, tea value addition, and bamboo mega clusters."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "62.1 / 100",
+                "metric": "Safety Index",
+                "subValue": "Peace accords implemented across major insurgent groups",
+                "status": "Moderate",
+                "responsibility": "Riverine border vigil, anti-poaching operations in Kaziranga, and cyber crime prevention."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,18,500 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Growing at 8.9% annually",
+                "status": "Moderate",
+                "responsibility": "Bridging income gaps through agrarian modernization, silk sericulture, and logistics hub incentives."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "26.4%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹1.28 Lakh Cr | Fiscal Deficit: 3.1%",
+                "status": "Good",
+                "responsibility": "Maintaining debt within FRBM targets while financing large-scale infrastructure investments."
+            }
+        }
+    },
+    {
+        "id": "bihar",
+        "name": "Bihar",
+        "capital": "Patna",
+        "region": "East India",
+        "color": "#EF4444",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "63.8%",
+                "metric": "Literacy Rate",
+                "subValue": "GER Higher Edu: 14.5% | 75,000+ Schools",
+                "status": "Needs Attention",
+                "responsibility": "Massive teacher recruitment drives (BPSC), modernization of government schools, and expanding technical polytechnics."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "41.2 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Doctor-Patient Ratio: 1:28,000 | New AIIMS at Darbhanga",
+                "status": "Critical",
+                "responsibility": "Strengthening primary healthcare infrastructure, Kala-Azar eradication, and upgrading Patna Medical College Hospital (PMCH)."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "210,000 km",
+                "metric": "Total Rural & State Roads",
+                "subValue": "100% Village Electrification | Ganga Expressways",
+                "status": "Good",
+                "responsibility": "Expanding four-lane expressways, river bridges over Ganga and Kosi, and flood drainage masterplans."
+            },
+            "population": {
+                "label": "Population",
+                "value": "128.5 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 1,365 / km² (Highest in India)",
+                "status": "Needs Attention",
+                "responsibility": "Providing welfare delivery, skill training for youth demographic dividend, and migrant welfare registries."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹82,000 Cr",
+                "metric": "Industrial Output",
+                "subValue": "Biofuel & Ethanol Production Leader | Food Processing",
+                "status": "Needs Attention",
+                "responsibility": "Implementing Ethanol Promotion Policy, leather and textile parks, and attracting manufacturing to Industrial corridors."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "59.4 / 100",
+                "metric": "Safety Index",
+                "subValue": "Dial 112 Emergency Fleet | Conviction Rate: 48%",
+                "status": "Moderate",
+                "responsibility": "Enforcing state liquor prohibition, modernization of police stations, and cyber surveillance units."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹54,111 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Lowest in India | High Remittance Inflow",
+                "status": "Critical",
+                "responsibility": "Stimulating local job creation, agro-processing (makhana, litchi, maize), and MSME micro-credits."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "38.7%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹2.85 Lakh Cr | FRBM Target Pressure",
+                "status": "Needs Attention",
+                "responsibility": "Balancing capital capital expenditure with debt servicing commitments and enhancing own tax revenue."
+            }
+        }
+    },
+    {
+        "id": "chhattisgarh",
+        "name": "Chhattisgarh",
+        "capital": "Raipur",
+        "region": "Central India",
+        "color": "#8B5CF6",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "71.0%",
+                "metric": "Literacy Rate",
+                "subValue": "Swami Atmanand English Medium Schools: 700+",
+                "status": "Moderate",
+                "responsibility": "Expanding quality schooling in tribal Bastar and Surguja zones, engineering colleges, and bilingual primary education."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "56.4 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Haat Bazaar Clinic Yojana: 4M+ Treatments",
+                "status": "Moderate",
+                "responsibility": "Operating mobile clinics in remote forest areas, sickle cell anemia screening, and upgrading AIIMS Raipur synergy."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "36,200 km",
+                "metric": "Surfaced Roads",
+                "subValue": "Power-Surplus State | Raipur-Visakhapatnam Expressway",
+                "status": "Good",
+                "responsibility": "Freight rail lines for coal and iron ore evacuation, 24x7 industrial power distribution, and rural road networks."
+            },
+            "population": {
+                "label": "Population",
+                "value": "30.1 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 223 / km² | Tribal: 30.6%",
+                "status": "Good",
+                "responsibility": "Forest Rights Act (FRA) community land titles, minor forest produce procurement (Tendu, Mahua), and tribal welfare."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹1.92 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Bhilai Steel Plant | Top Coal & Aluminum Hub",
+                "status": "Good",
+                "responsibility": "Decarbonizing heavy steel & sponge iron industries, green hydrogen pilots, and electronics manufacturing at Naya Raipur."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "64.8 / 100",
+                "metric": "Safety Index",
+                "subValue": "LWE violence declined by 75% over 5 years",
+                "status": "Moderate",
+                "responsibility": "Counter-insurgency rehabilitation, establishing forward operating camps in Bastar, and tribal police recruitment (Bastar Fighters)."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,33,898 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "GSDP Growth: 8.0%",
+                "status": "Moderate",
+                "responsibility": "Paddy procurement bonus schemes (NYAY), agro-processing incentives, and mineral royalty collection."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "27.1%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹1.12 Lakh Cr | Well within prudential norms",
+                "status": "Good",
+                "responsibility": "Utilizing mining revenues for capital investments while keeping public debt manageable."
+            }
+        }
+    },
+    {
+        "id": "goa",
+        "name": "Goa",
+        "capital": "Panaji",
+        "region": "West India",
+        "color": "#06B6D4",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "88.7%",
+                "metric": "Literacy Rate",
+                "subValue": "Top 3 in India | IIT Goa, BITS Pilani & GIM",
+                "status": "Excellent",
+                "responsibility": "Fostering STEM research, coding bootcamps in state schools, and high-tech skill incubators."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "73.9 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Doctor ratio: 1:850 | 100% Institutional Deliveries",
+                "status": "Excellent",
+                "responsibility": "Deen Dayal Swasthya Seva universal health scheme, geriatric care, and world-class medical tourism facilities."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "15,800 km",
+                "metric": "Road Network",
+                "subValue": "Manohar Intl Airport (Mopa) | Zuari Cable Bridge",
+                "status": "Excellent",
+                "responsibility": "Smart city urban governance in Panaji, cruise terminal at Mormugao port, and high-speed fiber broadband."
+            },
+            "population": {
+                "label": "Population",
+                "value": "1.58 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 428 / km² | Urban: 62.2%",
+                "status": "Good",
+                "responsibility": "Managing seasonal tourist surges (9M+ visitors/yr), coastal zone regulation (CRZ), and heritage conservation."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹64,000 Cr",
+                "metric": "Industrial Output",
+                "subValue": "Major Pharma Export Hub | IT & Gaming Destination",
+                "status": "Good",
+                "responsibility": "Clean pharmaceutical formulation parks, green technology startups, and premium hospitality expansion."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "76.4 / 100",
+                "metric": "Safety Index",
+                "subValue": "Tourist Police Wing | Low violent crime rate",
+                "status": "Good",
+                "responsibility": "Beach patrol security, narcotics enforcement bureau, and digital surveillance for tourist safety."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹4,72,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Highest among Indian States",
+                "status": "Excellent",
+                "responsibility": "Sustaining high-value service economy, luxury tourism, and knowledge-based startups."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "31.5%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹32,400 Cr | Repayment on track",
+                "status": "Good",
+                "responsibility": "Phasing out mining dependency, diversifying excise and GST revenues, and green debt bonds."
+            }
+        }
+    },
+    {
+        "id": "gujarat",
+        "name": "Gujarat",
+        "capital": "Gandhinagar",
+        "region": "West India",
+        "color": "#F97316",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "79.3%",
+                "metric": "Literacy Rate",
+                "subValue": "Mission School of Excellence | IIM-A, IIT-GN, NFSU",
+                "status": "Good",
+                "responsibility": "Smart classroom integration across 20,000 schools, maritime universities, and petrochemical skill councils."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "69.1 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "New AIIMS Rajkot | 108 Emergency Ambulance Network",
+                "status": "Good",
+                "responsibility": "Malnutrition reduction initiatives (Suposhit Gujarat), kidney institute expansion, and rural health center upgrades."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "180,000 km",
+                "metric": "Road Network",
+                "subValue": "Mundra & Kandla Ports | GIFT City | Dholera SIR",
+                "status": "Excellent",
+                "responsibility": "Delhi-Mumbai Industrial Corridor (DMIC), high-speed bullet train corridor, and Sardar Sarovar water grid."
+            },
+            "population": {
+                "label": "Population",
+                "value": "71.5 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 365 / km² | Urban: 42.6%",
+                "status": "Good",
+                "responsibility": "Managing rapid urban expansion in Ahmedabad and Surat, slum redevelopment, and migrant workforce amenities."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹12.8 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Accounts for 33% of India's Exports | Petrochemical Giant",
+                "status": "Excellent",
+                "responsibility": "Semiconductor manufacturing (Micron / Tata), electric vehicle manufacturing (Sanand), diamond bourses, and renewable parks (Khavda 30 GW)."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "74.8 / 100",
+                "metric": "Safety Index",
+                "subValue": "VISWAS CCTV City Surveillance | High Conviction Rate",
+                "status": "Good",
+                "responsibility": "Coastal marine policing along 1,600 km shoreline, cyber forensic hubs, and anti-narcotics port seizures."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,76,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "GSDP Growth: 13.2% (Top tier)",
+                "status": "Excellent",
+                "responsibility": "Encouraging international financial services (GIFT-IFSC), aerospace supply chains, and export competitiveness."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "19.8%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹4.25 Lakh Cr | One of lowest debt ratios",
+                "status": "Excellent",
+                "responsibility": "Prudent fiscal management, maintaining revenue surplus, and reinvesting returns into capital assets."
+            }
+        }
+    },
+    {
+        "id": "haryana",
+        "name": "Haryana",
+        "capital": "Chandigarh",
+        "region": "North India",
+        "color": "#6366F1",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "76.6%",
+                "metric": "Literacy Rate",
+                "subValue": "GER Higher Edu: 31.4% | Super-100 Coaching Program",
+                "status": "Good",
+                "responsibility": "Model Sanskriti Schools, engineering institutes in Gurugram and Sonipat, and dual-education vocational diplomas."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "61.3 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Sex ratio at birth improved to 920 | AIIMS Jhajjar",
+                "status": "Good",
+                "responsibility": "Beti Bachao Beti Padhao enforcement, Nirogi Haryana health checkups, and cancer care institutes."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "82,500 km",
+                "metric": "Road Network",
+                "subValue": "KMP Expressway | Rapid Metro Gurugram | DMIC corridor",
+                "status": "Excellent",
+                "responsibility": "NCR logistics hubs, multi-modal transport parks at Nangal Chaudhary, and industrial water pipelines."
+            },
+            "population": {
+                "label": "Population",
+                "value": "29.8 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 675 / km² | Urban: 35.1%",
+                "status": "Good",
+                "responsibility": "Parivar Pehchan Patra digital welfare, youth sports academies, and agricultural worker pensions."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹5.40 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Produces 50% of Passenger Cars in India | IT Hub Gurugram",
+                "status": "Excellent",
+                "responsibility": "Automotive manufacturing (Maruti Suzuki, Honda), fintech MNCs, food processing clusters, and footwear zones."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "65.7 / 100",
+                "metric": "Safety Index",
+                "subValue": "Haryana Emergency Response System (Dial 112)",
+                "status": "Moderate",
+                "responsibility": "Curbing gang activity in NCR fringe, women safety helplines, and industrial dispute arbitration."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,96,600 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Rank 2 among major states",
+                "status": "Excellent",
+                "responsibility": "Transitioning from agrarian surplus to high-technology R&D services and export-oriented manufacturing."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "25.9%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹2.87 Lakh Cr | Fiscal Deficit: 2.9%",
+                "status": "Good",
+                "responsibility": "Managing power utility DISCOM finances under UDAY and capping non-productive borrowing."
+            }
+        }
+    },
+    {
+        "id": "himachal_pradesh",
+        "name": "Himachal Pradesh",
+        "capital": "Shimla",
+        "region": "North India",
+        "color": "#14B8A6",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "83.8%",
+                "metric": "Literacy Rate",
+                "subValue": "School Enrollment: 99.8% | IIT Mandi, IIIT Una",
+                "status": "Excellent",
+                "responsibility": "Winter coaching academies, digital education in tribal Lahaul-Spiti, and vocational horticulture diplomas."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "74.1 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "HIMCARE Health Card coverage | AIIMS Bilaspur",
+                "status": "Excellent",
+                "responsibility": "High-altitude medical clinics, telemedicine links, and universal immunization in mountain settlements."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "41,200 km",
+                "metric": "Mountain Roads",
+                "subValue": "Atal Tunnel Rohtang | 100% Electrified Railway Network",
+                "status": "Good",
+                "responsibility": "All-weather tunnel engineering, ropeway transport projects, and landslide prevention geotextiles."
+            },
+            "population": {
+                "label": "Population",
+                "value": "7.45 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 134 / km² | Rural: 89.9%",
+                "status": "Good",
+                "responsibility": "Preserving mountain ecology, sustainable agro-pastoral communities, and forest conservation."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹95,000 Cr",
+                "metric": "Industrial Output",
+                "subValue": "Asia's Largest Pharma Hub (Baddi-Barotiwala-Nalagarh)",
+                "status": "Good",
+                "responsibility": "Bulk drug park development at Una, medical device manufacturing, and high-density apple orchards."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "82.4 / 100",
+                "metric": "Safety Index",
+                "subValue": "One of the lowest crime rates in India",
+                "status": "Excellent",
+                "responsibility": "Tourist policing, anti-drug operations targeting narcotics corridors, and community policing in valleys."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,22,200 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Above national average",
+                "status": "Good",
+                "responsibility": "Promoting off-season vegetable farming, hydro royalties, and eco-tourism revenue."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "43.1%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹86,500 Cr | Old Pension Scheme (OPS) burden",
+                "status": "Critical",
+                "responsibility": "Restructuring pension liabilities, mobilizing green energy cess, and optimizing revenue expenditure."
+            }
+        }
+    },
+    {
+        "id": "jharkhand",
+        "name": "Jharkhand",
+        "capital": "Ranchi",
+        "region": "East India",
+        "color": "#D97706",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "67.6%",
+                "metric": "Literacy Rate",
+                "subValue": "Schools of Eminence Initiative | XLRI & IIT ISM Dhanbad",
+                "status": "Moderate",
+                "responsibility": "Tribal language medium schools (Santhali, Ho), residential ashram schools, and polytechnic institutes."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "47.4 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "RIMS Ranchi Upgradation | Malnutrition Centers",
+                "status": "Needs Attention",
+                "responsibility": "Combating anemia in adivasi children, mobile rural dispensaries, and district hospital bed capacity."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "48,000 km",
+                "metric": "Road Network",
+                "subValue": "Varanasi-Kolkata Expressway | Sahibganj Multi-Modal Terminal",
+                "status": "Moderate",
+                "responsibility": "Coal freight corridors, industrial water pipelines, and rural road connectivity under PMGSY."
+            },
+            "population": {
+                "label": "Population",
+                "value": "39.4 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 494 / km² | Tribal: 26.2%",
+                "status": "Moderate",
+                "responsibility": "Tribal land rights tenancy acts (CNT/SPT), displacement rehabilitation, and forest produce minimum support prices."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹2.10 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Holds 40% of India's Mineral Wealth | Tata Steel Jamshedpur",
+                "status": "Good",
+                "responsibility": "Mineral beneficiation, electric vehicle assembly policy, steel and cement mega plants, and mining reclamation."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "61.8 / 100",
+                "metric": "Safety Index",
+                "subValue": "Naxal influence reduced to isolated pockets (Budha Pahad freed)",
+                "status": "Moderate",
+                "responsibility": "Securing mining rail routes, anti-trafficking task forces, and community outreach in former conflict areas."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹86,060 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "GSDP Growth: 7.2%",
+                "status": "Needs Attention",
+                "responsibility": "Capturing higher value from mineral extraction, promoting lac cultivation, and MSME clusters."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "32.4%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹1.35 Lakh Cr | High mineral revenue buffer",
+                "status": "Moderate",
+                "responsibility": "Monetizing mining non-tax receipts and deploying District Mineral Foundation (DMF) funds for local assets."
+            }
+        }
+    },
+    {
+        "id": "karnataka",
+        "name": "Karnataka",
+        "capital": "Bengaluru",
+        "region": "South India",
+        "color": "#4F46E5",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "75.6%",
+                "metric": "Literacy Rate",
+                "subValue": "IISc, IIM-B, NLSIU | 220+ Engineering Colleges",
+                "status": "Good",
+                "responsibility": "Karnataka Skill Mission, AI/Deep-tech research incubators, and upgrading government primary schools (Namma Shala)."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "68.2 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Namma Clinics | NIMHANS World Class Neuroscience Hub",
+                "status": "Good",
+                "responsibility": "Arogya Karnataka universal healthcare, mental health tele-counseling, and North Karnataka district hospital upgrades."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "298,000 km",
+                "metric": "Road Network",
+                "subValue": "Bengaluru-Mysuru Expressway | Namma Metro 73+ km | Kempegowda T2",
+                "status": "Good",
+                "responsibility": "Decongesting Bengaluru suburban rail and metro, Mangaluru deep-sea port expansion, and solar parks (Pavagada 2,050 MW)."
+            },
+            "population": {
+                "label": "Population",
+                "value": "67.6 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 353 / km² | Urban: 38.7%",
+                "status": "Good",
+                "responsibility": "Managing metropolitan immigration, Gruha Lakshmi and welfare safety nets, and drought relief systems."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹11.2 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Silicon Valley of Asia | 40% of India's IT Exports | Aerospace Hub",
+                "status": "Excellent",
+                "responsibility": "Semiconductor fab incentives (Foxconn, ISMC), aerospace & defense manufacturing, biotechnology clusters, and EV hubs."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "73.2 / 100",
+                "metric": "Safety Index",
+                "subValue": "CID Cyber Crime Police | Safe City Project with 7,500+ AI Cameras",
+                "status": "Good",
+                "responsibility": "Combating financial and cyber frauds, women's safety patrol (Rani Chennamma squads), and traffic automation."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹3,05,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Highest among Southern States | +12.8% YoY",
+                "status": "Excellent",
+                "responsibility": "Spreading IT wealth beyond Bengaluru into tier-2 cities (Mysuru, Hubballi-Dharwad, Mangaluru) through 'Beyond Bengaluru' policy."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "27.5%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹5.70 Lakh Cr | Guarantee schemes impact budget",
+                "status": "Good",
+                "responsibility": "Balancing guarantee scheme expenditures with infrastructure capital outlay while complying with fiscal limits."
+            }
+        }
+    },
+    {
+        "id": "kerala",
+        "name": "Kerala",
+        "capital": "Thiruvananthapuram",
+        "region": "South India",
+        "color": "#059669",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "96.2%",
+                "metric": "Literacy Rate",
+                "subValue": "Highest in India | 100% High-Tech Classrooms in Public Schools",
+                "status": "Excellent",
+                "responsibility": "Digital University Kerala, life-long adult education, higher education curriculum revamp, and digital literacy."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "82.2 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Rank 1 in India | Life Expectancy: 75.3 yrs | IMR: 6 per 1,000",
+                "status": "Excellent",
+                "responsibility": "Family Health Centers (Aardram Mission), elderly palliative care network, and pandemic surveillance systems."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "172,000 km",
+                "metric": "Road Network",
+                "subValue": "Vizhinjam Transshipment Port | 4 International Airports | Kochi Water Metro",
+                "status": "Good",
+                "responsibility": "NH-66 six-laning, coastal protection seawalls, flood resilience, and solar-powered Cochin International Airport."
+            },
+            "population": {
+                "label": "Population",
+                "value": "35.3 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 909 / km² | Aging Population: 16.5% over 60",
+                "status": "Good",
+                "responsibility": "Managing graying demographics, welfare pensions for 5M+ seniors, and reintegration of Gulf diaspora returnees."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹1.65 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Kerala Startup Mission | Spices, Marine Exports & Tourism",
+                "status": "Moderate",
+                "responsibility": "Promoting knowledge economy, biomedical devices park at Thiruvananthapuram, IT parks (Technopark & Infopark)."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "81.5 / 100",
+                "metric": "Safety Index",
+                "subValue": "Janamaithri Community Policing | Pink Police Patrol",
+                "status": "Excellent",
+                "responsibility": "Coastal maritime surveillance, combating synthetic drug distribution, and cyber security drone cells."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,63,800 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Remittances contribute ~30% equivalent to GSDP",
+                "status": "Good",
+                "responsibility": "Channeling NRI remittances into productive infrastructure bonds (KIIFB) and sunrise industries."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "37.4%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹3.90 Lakh Cr | High salary & pension liabilities",
+                "status": "Needs Attention",
+                "responsibility": "Curbing revenue deficit, rationalizing non-plan expenditures, and expanding state tax buoyancy."
+            }
+        }
+    },
+    {
+        "id": "madhya_pradesh",
+        "name": "Madhya Pradesh",
+        "capital": "Bhopal",
+        "region": "Central India",
+        "color": "#84CC16",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "70.6%",
+                "metric": "Literacy Rate",
+                "subValue": "CM RISE Schools: 350+ | IIT & IIM Indore",
+                "status": "Moderate",
+                "responsibility": "Modernizing rural school clusters, tribal vocational polytechnics, and Hindi-medium medical education."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "44.8 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "IMR: 43 per 1,000 | AIIMS Bhopal Expansion",
+                "status": "Needs Attention",
+                "responsibility": "Addressing child malnutrition in Sheopur tribal belt, Sanjeevani clinics, and maternal health emergency transport."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "162,000 km",
+                "metric": "Surfaced Roads",
+                "subValue": "Rewa Ultra Mega Solar (750 MW) | Delhi-Mumbai Expressway MP Stretch",
+                "status": "Good",
+                "responsibility": "Ken-Betwa river interlinking project, metro rail networks in Bhopal & Indore, and rural canal irrigation."
+            },
+            "population": {
+                "label": "Population",
+                "value": "85.4 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 277 / km² | Largest Tribal Population (21.1%)",
+                "status": "Moderate",
+                "responsibility": "Ladli Behna welfare transfers, implementation of PESA act in scheduled areas, and rural livelihood schemes."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹3.10 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Indore Cleanest City 7x | Pithampur Auto & Pharma Hub",
+                "status": "Good",
+                "responsibility": "Expanding automobile manufacturing, textile and garment parks, food processing (soybean, wheat), and IT corridors."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "66.3 / 100",
+                "metric": "Safety Index",
+                "subValue": "URJA Women Help Desks across 700 Police Stations",
+                "status": "Moderate",
+                "responsibility": "Wildlife anti-poaching in tiger reserves, cyber crime investigation lab at Bhopal, and rural beat policing."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,40,580 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Double-digit agricultural growth for a decade",
+                "status": "Moderate",
+                "responsibility": "Transforming agriculture surplus through food parks, cold chain storage, and irrigation expansion."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "29.8%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹3.75 Lakh Cr | Deficit within 3.5%",
+                "status": "Good",
+                "responsibility": "Balancing major direct benefit transfer commitments with capital asset generation."
+            }
+        }
+    },
+    {
+        "id": "maharashtra",
+        "name": "Maharashtra",
+        "capital": "Mumbai",
+        "region": "West India",
+        "color": "#2563EB",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "84.8%",
+                "metric": "Literacy Rate",
+                "subValue": "IIT Bombay, TIFR, ICT, SPPU | 850+ Engineering Institutes",
+                "status": "Excellent",
+                "responsibility": "Modernizing Zilla Parishad schools, innovation incubators, and vocational automotive training in Pune/Nashik."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "72.5 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Mahatma Jyotirao Phule Jan Arogya Yojana | AIIMS Nagpur",
+                "status": "Good",
+                "responsibility": "Strengthening primary healthcare in Marathwada & Vidarbha, tertiary cancer care, and urban public hospitals."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "326,000 km",
+                "metric": "Road Network",
+                "subValue": "Samruddhi Mahamarg (701 km) | Mumbai Coastal Road | JNPA Port",
+                "status": "Excellent",
+                "responsibility": "Navi Mumbai International Airport, Mumbai Trans Harbour Link (Atal Setu), and expanding Mumbai Metro lines."
+            },
+            "population": {
+                "label": "Population",
+                "value": "126.4 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 411 / km² | Urban: 45.2%",
+                "status": "Moderate",
+                "responsibility": "Managing Mumbai-Pune-Thane megapolis migration, slum rehabilitation, and Marathwada drought mitigation."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹16.5 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Financial Capital of India | 14% of India's GDP",
+                "status": "Excellent",
+                "responsibility": "Leading BFSI sector, automobile hubs (Chakan), pharma formulation in Aurangabad, and data center clusters in Navi Mumbai."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "73.9 / 100",
+                "metric": "Safety Index",
+                "subValue": "Force One Anti-Terror Unit | Maharashtra Cyber Digital Forensic Hub",
+                "status": "Good",
+                "responsibility": "Coastal counter-terror surveillance, economic offense wing modernization, and AI-driven urban crowd management."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,77,600 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "+11.8% YoY Growth",
+                "status": "Excellent",
+                "responsibility": "Dispersing manufacturing investments into Vidarbha and Marathwada through industrial corridor subsidies."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "18.4%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹6.80 Lakh Cr | Lowest debt ratio among large states",
+                "status": "Excellent",
+                "responsibility": "High borrowing capacity utilized effectively for mega infrastructure projects without compromising fiscal buffers."
+            }
+        }
+    },
+    {
+        "id": "manipur",
+        "name": "Manipur",
+        "capital": "Imphal",
+        "region": "Northeast India",
+        "color": "#EC4899",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "79.8%",
+                "metric": "Literacy Rate",
+                "subValue": "National Sports University | Manipur University",
+                "status": "Good",
+                "responsibility": "Restoring disrupted educational institutions, sports training excellence, and digital remote learning modules."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "58.2 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "RIMS & JNIMS Imphal | High Sports Medicine Capacity",
+                "status": "Moderate",
+                "responsibility": "Rebuilding medical supplies to hill districts, mobile surgical units, and psychological trauma counseling."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "28,500 km",
+                "metric": "Road Network",
+                "subValue": "Jiribam-Imphal Railway Line & Highest Rail Pier Bridge",
+                "status": "Moderate",
+                "responsibility": "Asian Highway-1 connectivity to Moreh border gate, highway landslide repair, and airport runway modernization."
+            },
+            "population": {
+                "label": "Population",
+                "value": "3.22 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 144 / km² | Valley & Hill Communities",
+                "status": "Needs Attention",
+                "responsibility": "Relief and rehabilitation for internally displaced persons (IDPs), communal reconciliation, and housing."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹18,500 Cr",
+                "metric": "Industrial Output",
+                "subValue": "Handloom & Sericulture Leader | Moreh Border Trade Hub",
+                "status": "Moderate",
+                "responsibility": "Reviving cross-border trade with Southeast Asia (Act East), organic black rice (Chak-hao) processing, and handloom."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "44.6 / 100",
+                "metric": "Safety Index",
+                "subValue": "Joint Security Forces & Buffer Zone Deployment",
+                "status": "Critical",
+                "responsibility": "Restoring communal harmony, weapon recovery operations, border fencing, and countering illicit poppy cultivation."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹98,200 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Recovering from disruption",
+                "status": "Needs Attention",
+                "responsibility": "Revitalizing agrarian livelihoods, horticultural incentives, and restoring supply-chain logistics."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "46.2%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹15,400 Cr | High central emergency aid",
+                "status": "Needs Attention",
+                "responsibility": "Rebuilding public infrastructure with capital assistance grants from Union government."
+            }
+        }
+    },
+    {
+        "id": "meghalaya",
+        "name": "Meghalaya",
+        "capital": "Shillong",
+        "region": "Northeast India",
+        "color": "#14B8A6",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "75.5%",
+                "metric": "Literacy Rate",
+                "subValue": "NEHU & IIM Shillong | Educational Capital of Northeast",
+                "status": "Good",
+                "responsibility": "Upgrading rural ad-hoc school teachers, science labs in Khasi and Garo hills, and university research programs."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "54.8 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Mother and Child Tracking System (MOTHER app) | NEIGRIHMS",
+                "status": "Moderate",
+                "responsibility": "Reducing maternal mortality in remote hill villages, drone vaccine delivery, and upgrading sub-health centers."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "19,200 km",
+                "metric": "Road Network",
+                "subValue": "Umiam Hydro Dam | Shillong Airport (Umroi) Expansion",
+                "status": "Moderate",
+                "responsibility": "Meghalaya Integrated Transport Project, four-lane Shillong-Dawki highway, and high-altitude water supply grids."
+            },
+            "population": {
+                "label": "Population",
+                "value": "3.36 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 150 / km² | Matrilineal Society",
+                "status": "Good",
+                "responsibility": "Preserving sacred groves and community forests, empowering matrilineal land custodianship, and youth sports."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹26,400 Cr",
+                "metric": "Industrial Output",
+                "subValue": "Lakadong Turmeric & Ginger Processing | High Cement Reserves",
+                "status": "Moderate",
+                "responsibility": "Promoting GI-tagged Lakadong turmeric agro-processing, eco-friendly luxury tourism, and regulated sustainable limestone mining."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "71.2 / 100",
+                "metric": "Safety Index",
+                "subValue": "Traditional Dorbar Shnong village administration",
+                "status": "Good",
+                "responsibility": "Border surveillance along Bangladesh international border, anti-coal cartel monitoring, and tourist police units."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,03,400 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Growth: 7.8%",
+                "status": "Moderate",
+                "responsibility": "Boosting rural tourism, organic horticulture, and handloom exports to Bangladesh."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "39.5%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹17,800 Cr | Fiscal Deficit: 3.6%",
+                "status": "Moderate",
+                "responsibility": "Streamlining mining royalties and transitioning public debt to green external funded projects (World Bank, ADB)."
+            }
+        }
+    },
+    {
+        "id": "mizoram",
+        "name": "Mizoram",
+        "capital": "Aizawl",
+        "region": "Northeast India",
+        "color": "#10B981",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "91.6%",
+                "metric": "Literacy Rate",
+                "subValue": "Rank 2 in India | Mizoram University & NIT Mizoram",
+                "status": "Excellent",
+                "responsibility": "Promoting technical and digital entrepreneurship, bilingual vocational courses, and modern youth skilling."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "75.8 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Mizoram State Health Care Scheme (MSHCS) | ZMC Falkawn",
+                "status": "Good",
+                "responsibility": "Cancer care early detection centers, high-altitude telemedicine, and substance de-addiction programs."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "14,500 km",
+                "metric": "Road Network",
+                "subValue": "Kaladan Multi-Modal Transit Project | Bairabi-Sairang Rail",
+                "status": "Good",
+                "responsibility": "Connecting Aizawl to national railway network, border trade roads to Myanmar, and solar mini-grids."
+            },
+            "population": {
+                "label": "Population",
+                "value": "1.24 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 59 / km² | Urban: 52.1%",
+                "status": "Good",
+                "responsibility": "Community welfare through Young Mizo Association (YMA), refugee humanitarian coordination, and forest protection."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹16,800 Cr",
+                "metric": "Industrial Output",
+                "subValue": "Bamboo Processing Potential | Anthurium Flower Exports",
+                "status": "Moderate",
+                "responsibility": "Bamboo industrial parks, commercial dragon fruit and high-value horticulture, and handloom silk."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "83.6 / 100",
+                "metric": "Safety Index",
+                "subValue": "One of the most peaceful states in India",
+                "status": "Excellent",
+                "responsibility": "Strict anti-drug trafficking operations along international porous borders, and community police partnership."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,16,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Higher than Northeast average",
+                "status": "Good",
+                "responsibility": "Fostering service economy, sports academies (football talent export), and digital gig-economy."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "53.2%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹14,200 Cr | Highest debt-to-GSDP ratio in country",
+                "status": "Critical",
+                "responsibility": "Fiscal consolidation, curtailing government establishment expenditure, and optimizing revenue collection."
+            }
+        }
+    },
+    {
+        "id": "nagaland",
+        "name": "Nagaland",
+        "capital": "Kohima",
+        "region": "Northeast India",
+        "color": "#F59E0B",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "80.1%",
+                "metric": "Literacy Rate",
+                "subValue": "English medium public schooling | Nagaland University",
+                "status": "Good",
+                "responsibility": "Teacher training institutes, STEM education promotion, and cultural-traditional knowledge integration."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "50.3 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Nagaland Health Project (World Bank) | First Medical College at Kohima",
+                "status": "Moderate",
+                "responsibility": "Operationalizing Kohima Medical College, rural healthcare staff retention, and community health committees."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "16,800 km",
+                "metric": "Road Network",
+                "subValue": "Dimapur-Kohima 4-lane Highway | Zubza Railway Link",
+                "status": "Moderate",
+                "responsibility": "Upgrading foothill road connectivity, Dimapur airport expansion, and municipal drainage systems."
+            },
+            "population": {
+                "label": "Population",
+                "value": "2.19 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 132 / km² | 16 Recognized Major Tribes",
+                "status": "Good",
+                "responsibility": "Empowering tribal Hohos, preserving village autonomous institutions, and youth skill-employment matching."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹14,200 Cr",
+                "metric": "Industrial Output",
+                "subValue": "Hornbill Cultural Festival & Tourism | Organic Honey & Spices",
+                "status": "Moderate",
+                "responsibility": "Promoting Naga King Chilli and organic coffee processing, handicraft exports, and experiential tourism."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "69.4 / 100",
+                "metric": "Safety Index",
+                "subValue": "Ceasefire monitoring mechanisms and village councils",
+                "status": "Moderate",
+                "responsibility": "Ending illegal taxation by armed factions, securing interstate border highways, and cyber police units."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,32,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Growth: 6.9%",
+                "status": "Moderate",
+                "responsibility": "Commercializing sustainable agro-forestry, mineral extraction (limestone, petroleum reserves), and IT services."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "42.8%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹15,900 Cr | Heavy reliance on central devolution",
+                "status": "Needs Attention",
+                "responsibility": "Generating internal revenue through commercial taxation, power billing reform, and tourist licensing."
+            }
+        }
+    },
+    {
+        "id": "odisha",
+        "name": "Odisha",
+        "capital": "Bhubaneswar",
+        "region": "East India",
+        "color": "#0284C7",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "73.5%",
+                "metric": "Literacy Rate",
+                "subValue": "5T School Transformation: 7,000+ Schools | IIT, AIIMS, NISER",
+                "status": "Good",
+                "responsibility": "State-of-the-art 5T high schools with interactive panels, World Skill Center at Bhubaneswar, and tribal residential schools."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "63.7 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "BSKY Universal Health Card | 10 New Medical Colleges Added",
+                "status": "Good",
+                "responsibility": "Free healthcare coverage up to ₹10 Lakh for women, modern district cancer hospitals, and rural health clinics."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "260,000 km",
+                "metric": "Road Network",
+                "subValue": "Paradip Port (Largest Cargo Port in India) | Biju Expressway",
+                "status": "Excellent",
+                "responsibility": "Puri International Airport, coastal national waterways, disaster-resilient power transmission, and Bhubaneswar Metro."
+            },
+            "population": {
+                "label": "Population",
+                "value": "46.3 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 297 / km² | Tribal: 22.8% (62 Tribes, 13 PVTGs)",
+                "status": "Good",
+                "responsibility": "Disaster management zero-casualty protocols during Bay of Bengal cyclones, Mission Shakti women SHGs (7M+ members)."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹5.80 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Produces 50% of India's Aluminum & 25% of Steel",
+                "status": "Excellent",
+                "responsibility": "Green steel production, EV and lithium battery parks, chemical clusters at Paradip, and IT hubs (Infocity)."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "70.8 / 100",
+                "metric": "Safety Index",
+                "subValue": "ODRAF & Fire Services Global Renown | Special Task Force",
+                "status": "Good",
+                "responsibility": "Disaster relief emergency operations, coastal marine policing, wildlife anti-poaching (Similipal), and cyber crime cells."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,50,670 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Tripled in the last 12 years",
+                "status": "Good",
+                "responsibility": "Accelerating downstream value addition, sports economy (Global Hockey Capital), and electronics manufacturing."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "13.6%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹1.18 Lakh Cr | Lowest debt-to-GSDP in all of India",
+                "status": "Excellent",
+                "responsibility": "Model fiscal turnaround from debt-stressed state to revenue-surplus powerhouse with massive capital investments."
+            }
+        }
+    },
+    {
+        "id": "punjab",
+        "name": "Punjab",
+        "capital": "Chandigarh",
+        "region": "North India",
+        "color": "#E11D48",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "76.7%",
+                "metric": "Literacy Rate",
+                "subValue": "Schools of Eminence | IIT Ropar, IISER Mohali",
+                "status": "Good",
+                "responsibility": "Revamping government senior secondary schools, teacher foreign exchange training programs, and sports academies."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "65.5 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Aam Aadmi Clinics: 650+ operational | Homi Bhabha Cancer Hospital",
+                "status": "Good",
+                "responsibility": "Comprehensive primary healthcare, cancer registry for Malwa region, and advanced de-addiction rehabilitation."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "140,000 km",
+                "metric": "Road Network",
+                "subValue": "100% Rural Road Metalled | Amritsar-Jamnagar Expressway",
+                "status": "Good",
+                "responsibility": "Canal water recharging, solarisation of agriculture pump-sets, and modern cargo hubs at Ludhiana and Mohali."
+            },
+            "population": {
+                "label": "Population",
+                "value": "30.7 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 610 / km² | Overseas Diaspora: 5M+",
+                "status": "Moderate",
+                "responsibility": "Countering youth brain drain migration, elderly social pensions, and rural health safety nets."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹2.90 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Granary of India | Tractor, Bicycle & Sports Goods Leader",
+                "status": "Moderate",
+                "responsibility": "Diversifying from wheat-paddy monoculture to agro-processing, textile hubs in Ludhiana, and IT city Mohali."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "66.8 / 100",
+                "metric": "Safety Index",
+                "subValue": "Anti-Gangster Task Force (AGTF) | Border Drone Seizures",
+                "status": "Moderate",
+                "responsibility": "Interdicting cross-border drone narcotics and weapon drops, organized crime eradication, and highway patrol."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,82,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Historically high, now moderate growth rate",
+                "status": "Moderate",
+                "responsibility": "Revitalizing industrial investments, crop diversification incentives, and technical vocational hubs."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "47.8%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹3.40 Lakh Cr | High free power subsidy cost",
+                "status": "Critical",
+                "responsibility": "Debt restructuring, curbing committed power subsidy bills, and widening tax revenue from mining and liquor."
+            }
+        }
+    },
+    {
+        "id": "rajasthan",
+        "name": "Rajasthan",
+        "capital": "Jaipur",
+        "region": "North India",
+        "color": "#F97316",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "67.1%",
+                "metric": "Literacy Rate",
+                "subValue": "Mahatma Gandhi English Schools | Kota Coaching Capital | IIT, BITS",
+                "status": "Moderate",
+                "responsibility": "Expanding girls' education in desert districts, modernizing rural schools, and student mental health counseling in Kota."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "60.2 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Chiranjeevi / Right to Health Act | Free OPD/IPD Medicines",
+                "status": "Good",
+                "responsibility": "First state to enact Right to Health, upgrading district medical colleges, and universal maternal nutrition."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "270,000 km",
+                "metric": "Road Network",
+                "subValue": "Bhadla Solar Park (2,245 MW) | Delhi-Mumbai Expressway",
+                "status": "Excellent",
+                "responsibility": "Renewable energy evacuation corridors, Indira Gandhi Canal extension, and Eastern Rajasthan Canal Project (ERCP)."
+            },
+            "population": {
+                "label": "Population",
+                "value": "81.0 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 236 / km² | Largest State by Area (342,239 km²)",
+                "status": "Moderate",
+                "responsibility": "Water security in arid Thar desert zones, social security pension guarantees, and nomadic community welfare."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹4.15 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Rank 1 in Solar Energy | Marble, Zinc & Ceramic Leader | Barmer Refinery",
+                "status": "Good",
+                "responsibility": "Operationalizing HPCL Rajasthan Refinery at Pachpadra, EV industrial clusters, textile hubs in Bhilwara, and tourism."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "67.2 / 100",
+                "metric": "Safety Index",
+                "subValue": "Abhay Command Centers across all 33 Districts",
+                "status": "Good",
+                "responsibility": "Desert border guarding with BSF, curbing illegal sand mining, and specialized women safety units (Nirbhaya Squads)."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,56,150 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "+10.1% YoY Growth",
+                "status": "Good",
+                "responsibility": "Leveraging clean energy boom, stone and mineral exports, and world-heritage tourism to boost per capita output."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "39.2%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹5.37 Lakh Cr | Heavy DISCOM debt absorption",
+                "status": "Needs Attention",
+                "responsibility": "Managing power sector financial losses, rationalizing welfare guarantee liabilities, and tax enforcement."
+            }
+        }
+    },
+    {
+        "id": "sikkim",
+        "name": "Sikkim",
+        "capital": "Gangtok",
+        "region": "Northeast India",
+        "color": "#10B981",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "82.2%",
+                "metric": "Literacy Rate",
+                "subValue": "Free Higher Education to deserving students | Sikkim University",
+                "status": "Good",
+                "responsibility": "Scholarships for mountain students, digital high schools, and eco-agriculture vocational curricula."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "68.4 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Mukhya Mantri Swasthya Bima | STNM Multi-Specialty Gangtok",
+                "status": "Good",
+                "responsibility": "Free comprehensive medical insurance, high-altitude health centers, and organic lifestyle health promotion."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "8,900 km",
+                "metric": "Mountain Roads",
+                "subValue": "Pakyong Greenfield Airport | Sivok-Rangpo Rail Project",
+                "status": "Good",
+                "responsibility": "Engineering first rail line to Sikkim through tunnels, Teesta flood mitigation, and green public transport."
+            },
+            "population": {
+                "label": "Population",
+                "value": "0.69 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 97 / km² | Least Populated State in India",
+                "status": "Excellent",
+                "responsibility": "Incentivizing family fertility to counteract declining birth rates, preserving Lepcha and Bhutia indigenous traditions."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹38,000 Cr",
+                "metric": "Industrial Output",
+                "subValue": "World's First 100% Organic State | Major Pharma Hub",
+                "status": "Excellent",
+                "responsibility": "Certified organic food supply chains, clean pharmaceutical formulation plants, and high-value eco-tourism."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "85.2 / 100",
+                "metric": "Safety Index",
+                "subValue": "Consistently ranked safest state in India",
+                "status": "Excellent",
+                "responsibility": "Community-based zero-crime policing, border protocol with defense forces at Nathu La, and anti-plastic enforcement."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹5,19,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Top 2 in India alongside Goa",
+                "status": "Excellent",
+                "responsibility": "Sustaining high per-capita prosperity through clean industry, organic premiums, and high-end hospitality."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "31.2%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹14,800 Cr | Backed by high industrial revenue",
+                "status": "Good",
+                "responsibility": "Directing clean hydro and pharma tax revenues into climate adaptation infrastructure."
+            }
+        }
+    },
+    {
+        "id": "tamil_nadu",
+        "name": "Tamil Nadu",
+        "capital": "Chennai",
+        "region": "South India",
+        "color": "#7C3AED",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "80.3%",
+                "metric": "Literacy Rate",
+                "subValue": "GER Higher Edu: 51.3% (India's highest) | IIT Madras, Anna Univ",
+                "status": "Excellent",
+                "responsibility": "Naan Mudhalvan skilling scheme for 1.3M youth, breakfast scheme in primary schools, and STEM labs in government schools."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "78.4 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Rank 2 in India | Makkalai Thedi Maruthuvam doorstep care",
+                "status": "Excellent",
+                "responsibility": "Doorstep non-communicable disease treatment, world-leading organ donation program, and trauma care network."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "271,000 km",
+                "metric": "Road Network",
+                "subValue": "3 Major Ports (Chennai, Ennore, Tuticorin) | Wind Energy Leader",
+                "status": "Excellent",
+                "responsibility": "Expanding Chennai Metro Phase 2 (118 km), coastal freight corridors, and offshore wind power transmission."
+            },
+            "population": {
+                "label": "Population",
+                "value": "76.8 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 590 / km² | Urban: 48.4% (Highest among large states)",
+                "status": "Good",
+                "responsibility": "Managing large internal and migrant industrial workforce, Kalaignar Magalir Urimai Thogai monthly aid for 10M+ women."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹14.2 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Detroit of Asia | Top Electronic Exporter | Textile Hub",
+                "status": "Excellent",
+                "responsibility": "Attracting electronic giants (Apple/Pegatron, Foxconn), electric vehicle hubs (Ola, Ather), footwear, and defense corridor."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "77.5 / 100",
+                "metric": "Safety Index",
+                "subValue": "Kavalan SOS App | Highest proportion of women in police",
+                "status": "Good",
+                "responsibility": "Maintaining industrial peace and maritime surveillance, smart city CCTV policing, and cybercrime investigation units."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,75,500 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Growing at 11.2% CAGR",
+                "status": "Excellent",
+                "responsibility": "Driving state goal towards a $1 Trillion economy by 2030 through distributed industrial clusters across tier-2 cities."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "26.8%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹7.50 Lakh Cr | Solid economic base and revenue",
+                "status": "Good",
+                "responsibility": "Reforming power sector (TANGEDCO) finances and maintaining capital capex at 3% of GSDP."
+            }
+        }
+    },
+    {
+        "id": "telangana",
+        "name": "Telangana",
+        "capital": "Hyderabad",
+        "region": "South India",
+        "color": "#0284C7",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "72.8%",
+                "metric": "Literacy Rate",
+                "subValue": "IIT Hyderabad, ISB, IIIT, Osmania | T-Hub Innovation Engine",
+                "status": "Good",
+                "responsibility": "Residential welfare educational institutions (Gurukulam schools), IT skilling through TASK, and Young India Skill University."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "70.1 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Basti Dawakhanas (Urban Clinics) | NIMS Expansion & 4 Super Hospitals",
+                "status": "Good",
+                "responsibility": "Kanti Velugu universal eye screening (16M+ checked), Aarogyasri limit increased to ₹10 Lakh, and organ transplantation."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "132,000 km",
+                "metric": "Road Network",
+                "subValue": "Hyderabad Outer Ring Road (158 km) | Kaleshwaram Lift Irrigation",
+                "status": "Excellent",
+                "responsibility": "Regional Ring Road (RRR 340 km), Hyderabad Metro Phase-2 expansion, and continuous 24x7 power grid."
+            },
+            "population": {
+                "label": "Population",
+                "value": "38.2 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 340 / km² | Urban: 38.9%",
+                "status": "Good",
+                "responsibility": "Rythu Bharosa farmer support, Mahalaxmi free bus travel for women, and urban slum infrastructure."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹8.90 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Vaccine Capital of the World (Genome Valley) | Mega IT Exports",
+                "status": "Excellent",
+                "responsibility": "Producing 33% of global vaccine supply, attracting global capability centers (Google, Amazon, Microsoft), and aerospace SEZs."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "76.8 / 100",
+                "metric": "Safety Index",
+                "subValue": "Integrated Command and Control Centre (ICCC) | SHE Teams",
+                "status": "Good",
+                "responsibility": "Country-leading 1 Million+ CCTV network, SHE Teams women safety protection, and cyber crime command bureau."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹3,17,115 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Highest per capita income among all major Indian states",
+                "status": "Excellent",
+                "responsibility": "Sustaining high-growth tech momentum and decentralizing industrial development to Warangal and Karimnagar."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "28.3%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹3.90 Lakh Cr | Off-budget borrowings under check",
+                "status": "Good",
+                "responsibility": "Consolidating state corporation liabilities and balancing capital investments with debt service obligations."
+            }
+        }
+    },
+    {
+        "id": "tripura",
+        "name": "Tripura",
+        "capital": "Agartala",
+        "region": "Northeast India",
+        "color": "#10B981",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "87.2%",
+                "metric": "Literacy Rate",
+                "subValue": "Vidyajyoti School Scheme | Tripura University & NIT Agartala",
+                "status": "Excellent",
+                "responsibility": "CBSE affiliation conversion for state schools, Kokborok tribal language education, and polytechnic vocational expansion."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "57.6 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Chief Minister Jan Arogya Yojana | AGMC Hospital Hub",
+                "status": "Moderate",
+                "responsibility": "Universal cashless healthcare up to ₹5 Lakh, maternal care clinics in tribal ADC areas, and oxygen plant networks."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "15,100 km",
+                "metric": "Road Network",
+                "subValue": "Maitri Setu Bridge to Bangladesh | Maharaja Bir Bikram Airport",
+                "status": "Good",
+                "responsibility": "Agartala-Akhaura international railway line to Bangladesh, Chittagong port transit access, and gas-based power generation."
+            },
+            "population": {
+                "label": "Population",
+                "value": "4.15 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 395 / km² | Tribal: 31.8% (TTAADC)",
+                "status": "Good",
+                "responsibility": "Empowerment of Tripura Tribal Areas Autonomous District Council, Bru refugee resettlement, and forest dwellers' rights."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹31,000 Cr",
+                "metric": "Industrial Output",
+                "subValue": "2nd Largest Natural Rubber Producer in India | Bamboo & Gas",
+                "status": "Good",
+                "responsibility": "Rubber wood processing, bamboo composite units, natural gas-based fertilizer plants, and tea estates."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "74.1 / 100",
+                "metric": "Safety Index",
+                "subValue": "Tripura State Rifles (TSR) high counter-insurgency record",
+                "status": "Good",
+                "responsibility": "Securing 856 km perimeter border with Bangladesh, anti-smuggling vigilance, and community harmony."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,58,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Above Northeast average",
+                "status": "Good",
+                "responsibility": "Leveraging trade transit corridors to Bangladesh and ASEAN to transform Tripura into the Gateway of the Northeast."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "32.6%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹21,500 Cr | Prudent borrowing profile",
+                "status": "Moderate",
+                "responsibility": "Harnessing central capital investment loans (SASCI) for zero-interest long-term asset development."
+            }
+        }
+    },
+    {
+        "id": "uttar_pradesh",
+        "name": "Uttar Pradesh",
+        "capital": "Lucknow",
+        "region": "North India",
+        "color": "#DC2626",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "67.7%",
+                "metric": "Literacy Rate",
+                "subValue": "Operation Kayakalp: 130,000 Schools Renovated | IIT Kanpur & BHU",
+                "status": "Moderate",
+                "responsibility": "Smart classroom installation across 100k+ basic schools, Atal Residential Schools for labor children, and medical colleges in every district."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "43.3 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Encephalitis deaths down by 95% | AIIMS Gorakhpur & Rae Bareli",
+                "status": "Moderate",
+                "responsibility": "One District One Medical College initiative, Dastak campaign against vector diseases, and community health officer deployments."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "440,000 km",
+                "metric": "Road Network",
+                "subValue": "Expressway State: Purvanchal, Bundelkhand, Ganga | Jewar Intl Airport",
+                "status": "Excellent",
+                "responsibility": "Noida International Airport (Asia's largest), dedicated freight corridors, metro rail in 6 cities, and inland waterways (NW-1 Ganga)."
+            },
+            "population": {
+                "label": "Population",
+                "value": "241.0 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 829 / km² | Most Populous State in India",
+                "status": "Moderate",
+                "responsibility": "Distributing subsidized food grains to 150M beneficiaries, welfare Direct Benefit Transfers, and youth employment skilling."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹11.8 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "One District One Product (ODOP) | Defense Industrial Corridor",
+                "status": "Good",
+                "responsibility": "Attracting electronic manufacturing to Noida/Greater Noida, BrahMos missile unit in Lucknow, mobile manufacturing hub, and leather in Kanpur."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "72.4 / 100",
+                "metric": "Safety Index",
+                "subValue": "UP 112 Response Time: 8 mins | Anti-Mafia task forces",
+                "status": "Good",
+                "responsibility": "Operation Trinetra with 400,000 CCTV cameras, specialized Anti-Terror Squad (ATS) centers, and Women Power Line 1090."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹83,636 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Targeting $1 Trillion GSDP economy",
+                "status": "Needs Attention",
+                "responsibility": "Accelerating transition from subsistence farming into high-value manufacturing and agro-processing in Eastern UP and Bundelkhand."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "29.4%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹7.10 Lakh Cr | Deficit strictly within 3.5%",
+                "status": "Good",
+                "responsibility": "Increasing state tax buoyancy through commercial GST audits, liquor policy reforms, and infrastructure capex."
+            }
+        }
+    },
+    {
+        "id": "uttarakhand",
+        "name": "Uttarakhand",
+        "capital": "Dehradun",
+        "region": "North India",
+        "color": "#0284C7",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "78.8%",
+                "metric": "Literacy Rate",
+                "subValue": "IIT Roorkee, FRI, Doon School | 35 State Universities",
+                "status": "Good",
+                "responsibility": "Connecting remote mountain schools via satellite virtual classes, forestry & climate science research, and polytechnics."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "65.2 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Atal Ayushman Uttarakhand Universal Scheme | AIIMS Rishikesh",
+                "status": "Good",
+                "responsibility": "100% free healthcare coverage for all state households, mountain air-ambulance services, and disaster casualty care."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "53,500 km",
+                "metric": "Mountain Roads",
+                "subValue": "Char Dham All-Weather Highway | Rishikesh-Karnaprayag Rail (125 km)",
+                "status": "Good",
+                "responsibility": "High-altitude mountain tunnels, Tehri hydro-electric complex, and sustainable disaster-resilient valley bridges."
+            },
+            "population": {
+                "label": "Population",
+                "value": "11.6 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 189 / km² | Rural: 69.8%",
+                "status": "Good",
+                "responsibility": "Managing pilgrim influx during Char Dham and Kumbh Mela, combating rural hill migration ('ghost villages'), and forest conservation."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹1.45 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "SIDCUL Industrial Hubs (Haridwar, Pantnagar) | Auto & FMCG",
+                "status": "Good",
+                "responsibility": "Green manufacturing in Tarai plains, aromatic & medicinal plant processing, and international adventure tourism."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "78.9 / 100",
+                "metric": "Safety Index",
+                "subValue": "SDRF Disaster Response Force | Uniform Civil Code Enacted",
+                "status": "Good",
+                "responsibility": "Pioneering state disaster response during flash floods and avalanches, border policing along Tibet border, and pilgrim safety."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹2,33,000 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Higher than national average",
+                "status": "Good",
+                "responsibility": "Balancing environmental sustainability with hydropower royalties, hospitality, and pharmaceutical manufacturing."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "27.6%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹82,000 Cr | Prudent fiscal compliance",
+                "status": "Good",
+                "responsibility": "Securing disaster mitigation funding and utilizing capital investment loans for clean transport corridors."
+            }
+        }
+    },
+    {
+        "id": "west_bengal",
+        "name": "West Bengal",
+        "capital": "Kolkata",
+        "region": "East India",
+        "color": "#0D9488",
+        "criteria": {
+            "education": {
+                "label": "Education",
+                "value": "76.3%",
+                "metric": "Literacy Rate",
+                "subValue": "Kanyashree Prakalpa (UN Award) | IIT Kharagpur, Jadavpur, IIM-C",
+                "status": "Good",
+                "responsibility": "Girl-child education retention subsidies, higher education research chairs, and digital model schools across districts."
+            },
+            "healthcare": {
+                "label": "Healthcare",
+                "value": "65.9 / 100",
+                "metric": "NITI Health Index",
+                "subValue": "Swasthya Sathi Universal Card | AIIMS Kalyani | Free Hospital Care",
+                "status": "Good",
+                "responsibility": "Universal cashless healthcare up to ₹5 Lakh in female head of family name, fair-price medicine dispensaries, and SSKM hospital expansion."
+            },
+            "infrastructure": {
+                "label": "Infrastructure",
+                "value": "315,000 km",
+                "metric": "Road Network",
+                "subValue": "Kolkata Underwater Metro | Syama Prasad Mookerjee Port | Durgapur Expressway",
+                "status": "Good",
+                "responsibility": "India's first underwater metro tunnel under Hooghly river, Tajpur Deep Sea Port development, and Silicon Valley tech park in New Town."
+            },
+            "population": {
+                "label": "Population",
+                "value": "99.1 Million",
+                "metric": "Total Population",
+                "subValue": "Density: 1,028 / km² (Rank 2 in India) | Urban: 31.9%",
+                "status": "Moderate",
+                "responsibility": "Lakshmir Bhandar financial aid for 21M+ women, coastal Sundarbans delta community rehabilitation, and urban municipal services."
+            },
+            "industrial_development": {
+                "label": "Industrial Development",
+                "value": "₹6.20 Lakh Cr",
+                "metric": "Industrial Output",
+                "subValue": "Largest Producer of Jute & Leather | Haldia Petrochemicals",
+                "status": "Good",
+                "responsibility": "Deocha Pachami coal block development, modern IT hubs in Salt Lake & New Town, steel manufacturing in Asansol-Durgapur, and tea."
+            },
+            "law_enforcement": {
+                "label": "Law Enforcement",
+                "value": "69.8 / 100",
+                "metric": "Safety Index",
+                "subValue": "Kolkata Ranked Safest City in NCRB consecutively",
+                "status": "Good",
+                "responsibility": "Integrated coastal policing in the Sundarbans mangrove channels, citywide camera surveillance, and anti-trafficking task forces."
+            },
+            "per_capita": {
+                "label": "Per Capita Income",
+                "value": "₹1,41,370 / yr",
+                "metric": "NSDP Per Capita",
+                "subValue": "Growth: 9.4%",
+                "status": "Moderate",
+                "responsibility": "Fostering MSME manufacturing, leather and textile export parks, and deep-sea port logistics."
+            },
+            "state_debt": {
+                "label": "State Debt",
+                "value": "37.1%",
+                "metric": "Debt-to-GSDP Ratio",
+                "subValue": "Total Debt: ₹6.40 Lakh Cr | Legacy borrowing debt overhang",
+                "status": "Needs Attention",
+                "responsibility": "Servicing historical debt burdens while sustaining social security safety nets and boosting own tax revenues."
+            }
+        }
+    }
+]
+
+default_teams = [
+    {
+        "id": "team_1",
+        "name": "Chanakya Strategists",
+        "password": "pass123",
+        "allocatedStateId": "maharashtra",
+        "points": 120,
+        "pointLogs": [
+            {
+                "id": "log_1",
+                "pointsChange": 50,
+                "category": "Policy Pitch",
+                "reason": "Outstanding presentation on renewable energy transition and industrial corridor expansion.",
+                "timestamp": "2026-09-02 20:15:00"
+            },
+            {
+                "id": "log_2",
+                "pointsChange": 40,
+                "category": "Fiscal Strategy",
+                "reason": "Prudent budget deficit management and debt restructuring framework.",
+                "timestamp": "2026-09-02 21:00:00"
+            },
+            {
+                "id": "log_3",
+                "pointsChange": 30,
+                "category": "Crisis Response",
+                "reason": "Effective urban flood and coastal resilience simulation.",
+                "timestamp": "2026-09-02 21:45:00"
+            }
+        ]
+    },
+    {
+        "id": "team_2",
+        "name": "Team Garuda",
+        "password": "garuda2026",
+        "allocatedStateId": "karnataka",
+        "points": 105,
+        "pointLogs": [
+            {
+                "id": "log_4",
+                "pointsChange": 60,
+                "category": "Innovation",
+                "reason": "Pioneering semiconductor cluster roadmap and AI skilling policy.",
+                "timestamp": "2026-09-02 20:30:00"
+            },
+            {
+                "id": "log_5",
+                "pointsChange": 45,
+                "category": "Urban Mobility",
+                "reason": "Innovative transit-oriented development and metro expansion strategy.",
+                "timestamp": "2026-09-02 21:10:00"
+            }
+        ]
+    },
+    {
+        "id": "team_3",
+        "name": "Dharma Policy Cohort",
+        "password": "dharma321",
+        "allocatedStateId": "gujarat",
+        "points": 95,
+        "pointLogs": [
+            {
+                "id": "log_6",
+                "pointsChange": 55,
+                "category": "Economic Strategy",
+                "reason": "Port-led export industrialization and GIFT City international banking blueprint.",
+                "timestamp": "2026-09-02 20:45:00"
+            },
+            {
+                "id": "log_7",
+                "pointsChange": 40,
+                "category": "Infrastructure",
+                "reason": "Renewable hybrid park scaling and water grid masterplan.",
+                "timestamp": "2026-09-02 21:30:00"
+            }
+        ]
+    }
+]
+
+admin_config = {
+    "adminPasscode": "akshita",
+    "eventTitle": "StateCraft National Governance Simulation 2026",
+    "roundName": "Round 1: Strategic Planning & Fiscal Allocation",
+    "lastUpdated": "2026-09-02 22:30:00"
+}
+
+import re
+
+def get_calc_points(key, crit):
+    if "points" in crit and crit["points"] is not None and isinstance(crit["points"], (int, float)):
+        return int(crit["points"])
+    val = str(crit.get("value", ""))
+    m = re.search(r"([0-9]+(?:\.[0-9]+)?)", val)
+    num = float(m.group(1)) if m else 65.0
+    status = crit.get("status", "Moderate")
+    
+    if key == "education":
+        return max(10, min(100, round((num - 50) / 0.49)))
+    elif key == "healthcare":
+        return max(10, min(100, round((num - 35) / 0.55)))
+    elif key == "law_enforcement":
+        return max(10, min(100, round((num - 42) / 0.52)))
+    elif key == "state_debt":
+        return max(10, min(100, round((50 - num) / 0.38)))
+    elif key == "per_capita":
+        nums_only = re.sub(r"[^0-9]", "", val)
+        clean = float(nums_only) if nums_only else 150000.0
+        return max(10, min(100, round((clean - 55000) / 4400)))
+    else:
+        if status == "Excellent": return 88
+        if status == "Good": return 72
+        if status == "Needs Attention": return 38
+        if status == "Critical": return 22
+        return 60
+
+for s in states_data:
+    for k, v in s.get("criteria", {}).items():
+        v["points"] = get_calc_points(k, v)
+
+db = {
+    "states": states_data,
+    "teams": default_teams,
+    "adminConfig": admin_config
+}
+
+with open("data/default_states.json", "w", encoding="utf-8") as f:
+    json.dump(db, f, indent=2, ensure_ascii=False)
+
+with open("data/statecraft_db.json", "w", encoding="utf-8") as f:
+    json.dump(db, f, indent=2, ensure_ascii=False)
+
+print(f"Successfully generated database with {len(states_data)} states of India and {len(default_teams)} sample teams.")

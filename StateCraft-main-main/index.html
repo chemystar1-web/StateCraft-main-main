@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StateCraft — National Governance & Policy Simulation Platform</title>
+  <meta name="description" content="A state-of-the-art dual portal platform for governance simulations, managing 28 Indian states, 8 policy criteria, team state allocations, and real-time point scoring.">
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container flex items-center justify-between">
+      <a href="index.html" class="brand-badge">
+        <div class="brand-icon">🏛️</div>
+        <span>StateCraft</span>
+      </a>
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2" style="font-size: 0.8rem; color: var(--text-secondary);">
+          <span class="live-pulse"></span>
+          <span>Simulation Active</span>
+        </div>
+        <a href="admin.html" class="btn btn-secondary btn-sm">Admin Access</a>
+        <a href="participant.html" class="btn btn-primary btn-sm">Participant Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main class="container">
+    <section class="gateway-hero">
+      <div class="gateway-badge">
+        🇮🇳 28 States of India • 8 Governance Criteria • Real-Time Synchronization
+      </div>
+      <h1 class="gateway-title">
+        The Strategic Platform for<br>
+        <span>Governance & Policy Simulation</span>
+      </h1>
+      <p class="gateway-subtitle">
+        StateCraft empowers administrators to assign states, configure policy criteria, and award performance points, while teams navigate fiscal dilemmas and state development in a synchronized read-only participant dashboard.
+      </p>
+
+      <!-- Dual Portal Gateway Cards -->
+      <div class="portal-selection-grid">
+        <!-- Admin Portal Card -->
+        <div class="portal-entry-card admin-card">
+          <div>
+            <div class="portal-icon-box portal-icon-admin">
+              ⚙️
+            </div>
+            <div class="badge badge-indigo" style="margin-bottom: 0.75rem;">Command Center</div>
+            <h2 style="font-size: 1.8rem; margin-bottom: 0.75rem; color: #FFFFFF;">Admin Portal</h2>
+            <p style="font-size: 0.95rem; line-height: 1.5;">
+              Centralized orchestration hub for competition adjudicators, policy chairs, and administrators.
+            </p>
+
+            <ul class="portal-feature-list">
+              <li>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong>Allocate 28 States</strong> & provision team credentials</span>
+              </li>
+              <li>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong>Modify 8 Predefined Criteria</strong> for any Indian state</span>
+              </li>
+              <li>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong>Award & modify points</strong> with category tags & remarks</span>
+              </li>
+              <li>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Instant auto-synchronization across all participant screens</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <a href="admin.html" class="btn btn-primary btn-lg" style="width: 100%;">
+              Open Admin Portal →
+            </a>
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem;">
+              Passcode protected
+            </div>
+          </div>
+        </div>
+
+        <!-- Participant Portal Card -->
+        <div class="portal-entry-card participant-card">
+          <div>
+            <div class="portal-icon-box portal-icon-participant">
+              👥
+            </div>
+            <div class="badge badge-emerald" style="margin-bottom: 0.75rem;">Delegate Console</div>
+            <h2 style="font-size: 1.8rem; margin-bottom: 0.75rem; color: #FFFFFF;">Participant Portal</h2>
+            <p style="font-size: 0.95rem; line-height: 1.5;">
+              Dedicated strategic workstation for student delegates, teams, and policy analysts.
+            </p>
+
+            <ul class="portal-feature-list">
+              <li>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>Secure team login using admin-assigned credentials</span>
+              </li>
+              <li>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong>Read-Only view</strong> of allocated state particulars</span>
+              </li>
+              <li>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span>All 8 criteria displayed: Education, Healthcare, Debt, etc.</span>
+              </li>
+              <li>
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <span><strong>Live Team Points tracker</strong> with evaluation feedback logs</span>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <a href="participant.html" class="btn btn-success btn-lg" style="width: 100%;">
+              Enter Participant Portal →
+            </a>
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem;">
+              Authenticated with Team Name & Password allocated by Admin
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Demo Credentials Box -->
+      <div class="card" style="max-width: 800px; margin: 0 auto 3rem; text-align: left;">
+        <div class="flex items-center justify-between" style="margin-bottom: 1rem;">
+          <h4 style="color: #FFFFFF; font-size: 1.05rem;">🔑 Ready-to-Test Sample Team Credentials</h4>
+          <span class="badge badge-gold">Preloaded in Database</span>
+        </div>
+        <p style="font-size: 0.88rem; margin-bottom: 1rem;">
+          Use these sample teams to test the participant portal immediately, or visit the Admin Portal to create brand-new teams and allocate any of the 28 states:
+        </p>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div style="font-weight: 700; color: #FFFFFF;">Chanakya Strategists</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Allocated: <strong style="color: #60A5FA;">Maharashtra</strong></div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Password: <code style="color: #38BDF8;">pass123</code></div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div style="font-weight: 700; color: #FFFFFF;">Team Garuda</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Allocated: <strong style="color: #60A5FA;">Karnataka</strong></div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Password: <code style="color: #38BDF8;">garuda2026</code></div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div style="font-weight: 700; color: #FFFFFF;">Dharma Policy Cohort</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Allocated: <strong style="color: #60A5FA;">Gujarat</strong></div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Password: <code style="color: #38BDF8;">dharma321</code></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8 Criteria Spotlight -->
+      <div style="text-align: center; margin-top: 4rem;">
+        <h3 style="margin-bottom: 0.5rem;">The 8 Core Governance Criteria</h3>
+        <p style="margin-bottom: 2rem;">Predefined metrics and functional responsibilities modeled for all 28 states of India:</p>
+
+        <div class="grid grid-cols-4 gap-4" style="text-align: left;">
+          <div class="card">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎓</div>
+            <h4 style="margin-bottom: 0.25rem;">1. Education</h4>
+            <p style="font-size: 0.82rem;">Literacy rates, higher education GER, school transformation, and teacher ratios.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏥</div>
+            <h4 style="margin-bottom: 0.25rem;">2. Healthcare</h4>
+            <p style="font-size: 0.82rem;">NITI Health index, infant mortality rate (IMR), hospital beds, and universal coverage.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚡</div>
+            <h4 style="margin-bottom: 0.25rem;">3. Infrastructure</h4>
+            <p style="font-size: 0.82rem;">Highway density, ports, clean energy grids, airports, and urban mass rapid transit.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">👥</div>
+            <h4 style="margin-bottom: 0.25rem;">4. Population</h4>
+            <p style="font-size: 0.82rem;">Demographic scale, urbanization percentage, tribal demographics, and welfare reach.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏭</div>
+            <h4 style="margin-bottom: 0.25rem;">5. Industrial Development</h4>
+            <p style="font-size: 0.82rem;">Gross industrial output, Ease of Doing Business rank, SEZs, and export manufacturing.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🛡️</div>
+            <h4 style="margin-bottom: 0.25rem;">6. Law Enforcement</h4>
+            <p style="font-size: 0.82rem;">Public safety index, police personnel per lakh, emergency response, and cyber defense.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💰</div>
+            <h4 style="margin-bottom: 0.25rem;">7. Per Capita Income</h4>
+            <p style="font-size: 0.82rem;">Net State Domestic Product (NSDP) per capita, growth momentum, and wage prosperity.</p>
+          </div>
+          <div class="card">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📊</div>
+            <h4 style="margin-bottom: 0.25rem;">8. State Debt</h4>
+            <p style="font-size: 0.82rem;">Debt-to-GSDP ratio, fiscal deficit prudential limits, and sovereign borrowing solvency.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="border-top: 1px solid var(--border-subtle); padding: 2rem 0; margin-top: 4rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+    <div class="container">
+      StateCraft Simulation Architecture • Designed for Indian Governance & Policy Delegations
+    </div>
+  </footer>
+
+</body>
+</html>

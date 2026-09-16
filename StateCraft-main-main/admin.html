@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal — StateCraft Simulation Control</title>
+  <meta name="description" content="Central Administration Console for StateCraft simulation. Manage 28 states, configure 8 governance criteria, allocate states to teams, and award points.">
+  <link rel="stylesheet" href="css/design-system.css?v=5.0">
+  <link rel="stylesheet" href="css/portal.css?v=5.0">
+</head>
+<body>
+
+  <!-- Admin Auth Modal (Visible by default until verified) -->
+  <div id="admin-auth-modal" class="modal-backdrop active">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <div class="flex items-center gap-2">
+          <div class="brand-icon" style="width: 30px; height: 30px; font-size: 1rem;">🔐</div>
+          <h3>Admin Authorization</h3>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; margin-bottom: 1.25rem;">
+          Enter your administrator passcode to access team allocation, state criteria settings, and point scoring.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="admin-passcode-input">Admin Passcode</label>
+          <input type="password" id="admin-passcode-input" class="form-input" placeholder="Enter admin passcode" onkeydown="if(event.key==='Enter') verifyAdminAuth()">
+        </div>
+        <div id="admin-auth-error" style="color: var(--accent-rose); font-size: 0.85rem; margin-top: 0.5rem; display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <a href="index.html" class="btn btn-secondary btn-sm">Cancel</a>
+        <button class="btn btn-primary btn-sm" onclick="verifyAdminAuth()">Unlock Console →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Admin Wrapper (Shown once authorized) -->
+  <div id="admin-content-wrapper" style="display: none;">
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="brand-badge">
+            <div class="brand-icon">🏛️</div>
+            <span>StateCraft</span>
+          </a>
+          <span class="badge badge-indigo">Admin Portal</span>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2" style="font-size: 0.82rem; color: var(--text-secondary);">
+            <span class="live-pulse"></span>
+            <span>Live Sync Active</span>
+          </div>
+          <a href="participant.html" target="_blank" class="btn btn-secondary btn-sm" title="Open Participant Portal in new tab">
+            Participant Portal ↗
+          </a>
+          <button class="btn btn-secondary btn-sm" onclick="sessionStorage.removeItem('statecraft_admin_auth'); location.reload();">
+            Lock
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+      <!-- Page Title -->
+      <div class="flex items-center justify-between" style="margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h2>Simulation Orchestration Console</h2>
+          <p style="font-size: 0.95rem;">Manage teams, allocate 28 Indian states, modify 8 criteria baselines, and award evaluation points.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="btn btn-primary" onclick="openAddTeamModal()">
+            + Add New Team
+          </button>
+        </div>
+      </div>
+
+      <!-- Stat Summary Cards -->
+      <div class="stat-summary-grid">
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Registered Teams</div>
+            <div class="stat-number" id="stat-total-teams">0</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: #818CF8;">👥</div>
+        </div>
+
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">States Allocated</div>
+            <div class="stat-number" id="stat-allocated-states" style="color: #34D399;">0</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">🏛️</div>
+        </div>
+
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Available States</div>
+            <div class="stat-number" id="stat-available-states" style="color: #38BDF8;">28</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(14, 165, 233, 0.15); color: #38BDF8;">🗺️</div>
+        </div>
+
+        <div class="stat-card">
+          <div>
+            <div class="stat-label">Total Points Awarded</div>
+            <div class="stat-number" id="stat-total-points" style="color: var(--accent-gold);">0</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;">🏆</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-nav">
+        <button class="tab-btn admin-tab-btn active" data-tab="tab-teams">
+          👥 Teams & State Allocation
+        </button>
+        <button class="tab-btn admin-tab-btn" data-tab="tab-buzzer" id="tab-btn-buzzer">
+          🚨 Round 1 Buzzer Hub <span id="admin-nav-buzzer-badge" class="badge badge-needs-attention" style="margin-left: 0.35rem; font-size: 0.7rem; padding: 0.1rem 0.4rem;">LOCKED</span>
+        </button>
+        <button class="tab-btn admin-tab-btn" data-tab="tab-round2" id="tab-btn-round2">
+          📦 Round 2: Mystery Policy Arena <span class="badge badge-indigo" style="margin-left: 0.35rem; font-size: 0.7rem; padding: 0.1rem 0.4rem;">ARENA</span>
+        </button>
+        <button class="tab-btn admin-tab-btn" data-tab="tab-states">
+          🇮🇳 28 States & 8 Criteria Matrix
+        </button>
+        <button class="tab-btn admin-tab-btn" data-tab="tab-leaderboard">
+          🏆 Points Leaderboard
+        </button>
+        <button class="tab-btn admin-tab-btn" data-tab="tab-market" id="tab-btn-market">
+          🏗️ Infrastructure Market & Investments <span id="admin-nav-market-badge" class="badge badge-emerald" style="margin-left: 0.35rem; font-size: 0.7rem; padding: 0.1rem 0.4rem;">LIVE</span>
+        </button>
+        <button class="tab-btn admin-tab-btn" data-tab="tab-settings">
+          ⚙️ Simulation Settings & Reset
+        </button>
+      </div>
+
+      <!-- TAB 1: Teams & State Allocation -->
+      <section id="tab-teams" class="tab-section fade-in">
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="flex items-center justify-between" style="margin-bottom: 1.25rem;">
+            <div>
+              <h3>Team Allocation Registry</h3>
+              <p style="font-size: 0.85rem;">Teams login to the Participant Portal with their Name and Password. Allocated states are synced automatically.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openAddTeamModal()">
+              + Provision New Team
+            </button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Team Name</th>
+                  <th>Allocated State & Criteria</th>
+                  <th>Access Password</th>
+                  <th>Total Evaluated Score</th>
+                  <th>History</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="teams-table-body">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Round 1 Buzzer Hub -->
+      <section id="tab-buzzer" class="tab-section fade-in" style="display: none;">
+        <div class="admin-buzzer-panel">
+          <div class="flex items-center justify-between" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div class="flex items-center gap-2" style="margin-bottom: 0.3rem;">
+                <span class="badge badge-indigo">Round 1</span>
+                <h3>Rapid Response Buzzer Orchestration</h3>
+              </div>
+              <p style="font-size: 0.9rem;">Enable or lock the participant buzzer, observe arrival order in real time, and toggle display to participants.</p>
+            </div>
+            <div id="admin-buzzer-status-pill">
+              <!-- Dynamically populated: Open vs Locked -->
+            </div>
+          </div>
+
+          <!-- Admin Buzzer Control Bar -->
+          <div class="admin-buzzer-control-bar">
+            <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+              <!-- Main Enable / Disable Toggle -->
+              <button id="btn-admin-toggle-buzzer" class="btn btn-primary" onclick="handleAdminToggleBuzzer()" style="min-width: 220px;">
+                ⚡ Enable Buzzer for Participants
+              </button>
+
+              <!-- Display Order to Participants Toggle -->
+              <button id="btn-admin-toggle-reveal" class="btn btn-secondary" onclick="handleAdminToggleReveal()">
+                👁️ Display Order to Participants: <strong id="admin-reveal-state-text" style="color: #94A3B8; margin-left: 0.35rem;">OFF</strong>
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <!-- Reset Buzzer Button -->
+              <button class="btn btn-secondary btn-sm" onclick="handleAdminResetBuzzer()" title="Clear buzzes and start fresh for next question">
+                🔄 Reset Buzzer (Clear Clicks)
+              </button>
+            </div>
+          </div>
+
+          <!-- Buzzer Order Table & Live Feed -->
+          <div class="card" style="background: rgba(8, 12, 20, 0.6); border: 1px solid var(--border-subtle); margin-top: 1rem;">
+            <div class="flex items-center justify-between" style="margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <h4 style="margin-bottom: 0.2rem;">Live Participant Buzz Queue</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted);">
+                  Incoming participant clicks ranked sequentially by exact server receipt time.
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="admin-buzz-count-badge" class="badge badge-emerald">0 Teams Buzzed</span>
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table class="buzzer-table">
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Rank</th>
+                    <th>Team Name</th>
+                    <th>Allocated State</th>
+                    <th>Time Buzzed</th>
+                    <th>Reaction Time</th>
+                    <th>Quick Scoring</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-buzzer-queue-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty queue placeholder -->
+            <div id="admin-buzzer-empty-state" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+              <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⏱️</div>
+              <h4 style="color: var(--text-secondary); margin-bottom: 0.35rem;">No Participant Buzzes Recorded Yet</h4>
+              <p style="font-size: 0.85rem; max-width: 480px; margin: 0 auto;">
+                Click <strong>"⚡ Enable Buzzer for Participants"</strong> above to unlock the buzzer button for all logged-in participant teams. Their buzzes will instantly appear here in chronological order.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Round 2 Mystery Box Policy Arena -->
+      <section id="tab-round2" class="tab-section fade-in" style="display: none;">
+        <div class="card" style="background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-subtle); margin-bottom: 2rem;">
+          <!-- Top Header -->
+          <div class="flex items-center justify-between" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div class="flex items-center gap-2" style="margin-bottom: 0.3rem;">
+                <span class="badge badge-indigo">Round 2</span>
+                <h3>Cabinet Reform: Mystery Box Policy Arena</h3>
+              </div>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">
+                Select a governance sector first. You will be taken to the bottom of the page where 10 confidential Mystery Boxes appear: 4 policies boost this sector's efficiency and 6 belong to other sectors. Touch any box to flip and reveal!
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="btn btn-secondary btn-sm" onclick="handleAdminResetRound2Arena()" title="Reset current selection and choose a fresh sector/team">
+                🔄 Reset Current Selection
+              </button>
+            </div>
+          </div>
+
+          <!-- Strategic Governance Rules Banner -->
+          <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 2rem;">
+            <div class="flex items-center gap-2" style="font-weight: 700; color: #C084FC; margin-bottom: 0.35rem; font-size: 0.9rem;">
+              <span>📜 Strategic Directive & Adjudication Rules</span>
+            </div>
+            <div style="font-size: 0.83rem; color: #CBD5E1; line-height: 1.5;">
+              • <strong>Step 1:</strong> Click any priority governance sector below. The page will take you to the 10 Mystery Boxes at the bottom.<br>
+              • <strong>Step 2 (10 Mystery Boxes):</strong> Exactly <strong>4 policies increase the efficiency</strong> of this sector, and <strong>6 policies belong to a different sector</strong>.<br>
+              • <strong>3D Flip Reveal:</strong> All boxes initially conceal their policy. Touch/click a box to flip and reveal it. You can open <strong>any number of boxes</strong>.<br>
+              • <strong>State Dropdown & Persistence:</strong> Policies are identical across all states. If you change the state name in the dropdown, the already opened boxes <strong>remain open</strong> and unopened boxes remain available to be opened.<br>
+              • <strong>Execution:</strong> Click <strong>"Apply Opened Policies to Delegation & State Criteria"</strong> to award points and modify the state's criteria in real time.
+            </div>
+          </div>
+
+          <!-- ============================================================= -->
+          <!-- STEP 1: SELECT GOVERNANCE REFORM SECTOR (DISPLAYED FIRST!)    -->
+          <!-- ============================================================= -->
+          <div style="margin-bottom: 2.25rem;">
+            <div class="flex items-center justify-between" style="margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <h4 style="margin: 0; font-size: 1.15rem; color: #FFFFFF;">
+                  Step 1: Choose Priority Governance Reform Sector
+                </h4>
+                <p style="font-size: 0.83rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">
+                  Click any sector below to navigate to the 10 confidential Mystery Boxes at the bottom.
+                </p>
+              </div>
+              <span class="badge badge-gold">Step 1 of 2</span>
+            </div>
+
+            <!-- 8 Sector Cards Grid (Populated dynamically) -->
+            <div id="admin-sectors-selection-grid" class="admin-sector-grid">
+              <!-- Populated via admin.js -->
+            </div>
+          </div>
+
+          <!-- ============================================================= -->
+          <!-- STEP 2: 10 MYSTERY BOXES ARENA (AT BOTTOM OF THE PAGE)        -->
+          <!-- ============================================================= -->
+          <div id="admin-round2-boxes-container">
+            <!-- If no sector is selected yet, this placeholder is shown -->
+            <div id="admin-no-sector-placeholder" style="text-align: center; padding: 3.5rem 1.5rem; background: rgba(8, 12, 20, 0.5); border: 2px dashed rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); margin-bottom: 2rem;">
+              <div style="font-size: 3rem; margin-bottom: 0.75rem;">👆</div>
+              <h4 style="color: var(--text-secondary); margin-bottom: 0.35rem; font-size: 1.2rem;">
+                Select a Governance Sector Above to Unveil the 10 Mystery Boxes
+              </h4>
+              <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 540px; margin: 0 auto;">
+                Click any of the 8 governance sector cards above (Education, Healthcare, Infrastructure, etc.) to jump to the 10 confidential policy mystery boxes for that sector.
+              </p>
+            </div>
+
+            <!-- Active Mystery Boxes Arena (Displayed after sector is selected) -->
+            <div id="admin-active-boxes-arena" style="display: none; background: rgba(8, 12, 20, 0.7); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: var(--radius-xl); padding: 1.75rem; margin-bottom: 2.5rem; box-shadow: 0 15px 40px rgba(0,0,0,0.5);">
+              
+              <!-- Arena Action Bar: Target Sector & Team Assignment -->
+              <div class="flex items-center justify-between" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 1.25rem;">
+                <div class="flex items-center gap-3" style="flex-wrap: wrap;">
+                  <div class="badge badge-indigo" style="font-size: 0.88rem; padding: 0.35rem 0.75rem;">
+                    Target Sector: <strong id="admin-active-sector-title" style="color: #FFFFFF; margin-left: 0.3rem;">--</strong>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <label for="admin-turn-team-select" style="font-size: 0.82rem; font-weight: 700; color: #CBD5E1;">
+                      🏛️ Select State / Delegation:
+                    </label>
+                    <select id="admin-turn-team-select" class="form-input" style="padding: 0.35rem 0.75rem; font-size: 0.85rem; min-width: 260px;" onchange="handleAdminTurnTeamChange(this.value)">
+                      <!-- Populated via admin.js -->
+                    </select>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <div style="font-size: 0.88rem; color: #FFFFFF; font-weight: 700;">
+                    Boxes Opened: <span id="admin-boxes-selected-count" style="color: #A855F7; font-size: 1.15rem; font-weight: 800;">0</span> / 10
+                  </div>
+                  <div id="admin-tradeoff-status-pill" class="rule-compliance-pill rule-pill-valid">
+                    <span>✨</span>
+                    <span id="admin-tradeoff-status-text">Click any box to flip & unveil</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 10 3D Flip Mystery Boxes Responsive Grid (5 columns x 2 rows) -->
+              <div id="admin-mystery-boxes-grid" class="mystery-boxes-grid">
+                <!-- Dynamically populated with 10 3D flip mystery box cards -->
+              </div>
+
+              <!-- Review & Apply Bar (Displays whenever at least 1 box is opened) -->
+              <div id="admin-round2-action-bar" class="round2-selection-bar" style="display: none;">
+                <div style="flex-grow: 1;">
+                  <div style="font-size: 0.78rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #A855F7; margin-bottom: 0.25rem;">
+                    📦 Opened Policies Impact Summary
+                  </div>
+                  <div class="flex items-center gap-4" style="flex-wrap: wrap;">
+                    <div>
+                      Net Team Score Delta: <strong id="admin-round2-score-preview" style="font-size: 1.15rem; color: #34D399;">+0 pts</strong>
+                    </div>
+                    <div id="admin-round2-criteria-preview" class="flex items-center gap-1" style="flex-wrap: wrap;">
+                      <!-- Criteria tags -->
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <button id="btn-admin-apply-round2-package" class="btn btn-primary btn-lg" onclick="handleAdminExecuteRound2Package()" style="box-shadow: 0 4px 18px rgba(79, 70, 229, 0.45);">
+                    ⚡ Apply Opened Policies to Delegation & State Criteria →
+                  </button>
+                  <button class="btn btn-secondary btn-sm" onclick="handleAdminReshuffleCurrentSectorBoxes()" title="Re-seal and reshuffle all 10 boxes for this sector">
+                    🔄 Re-seal & Reshuffle Boxes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============================================================= -->
+          <!-- STEP 3: COMPLETED ROUND 2 DELEGATION ADJUDICATIONS TABLE      -->
+          <!-- ============================================================= -->
+          <div class="card" style="background: rgba(8, 12, 20, 0.6); border: 1px solid var(--border-subtle); margin-top: 1.5rem;">
+            <div class="flex items-center justify-between" style="margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <h4 style="margin-bottom: 0.2rem;">🏆 Completed Round 2 Policy Adjudications</h4>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">
+                  Official record of mystery policy packages applied to delegations and their states.
+                </p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="admin-round2-completed-count" class="badge badge-emerald">0 Delegations Completed</span>
+                <button class="btn btn-secondary btn-sm" onclick="handleAdminClearCompletedRound2()" title="Clear history of completed Round 2 records">
+                  Clear Records
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Delegation & State</th>
+                    <th>Reform Sector</th>
+                    <th>3 Chosen Mystery Policies & Particulars</th>
+                    <th>Net Impacts</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-round2-completed-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+
+            <div id="admin-round2-empty-state" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">📜</div>
+              <h5 style="color: var(--text-secondary); margin-bottom: 0.25rem;">No Delegations Adjudicated Yet</h5>
+              <p style="font-size: 0.82rem; max-width: 460px; margin: 0 auto;">
+                Select a sector above, choose 3 mystery boxes with at least 1 trade-off, and click "Apply Policy Package" to execute the round for a delegation.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 2: 28 States & 8 Criteria Matrix -->
+      <section id="tab-states" class="tab-section fade-in" style="display: none;">
+        <div class="state-filter-bar">
+          <div class="region-pills">
+            <button class="region-pill active" data-region="ALL">All 28 States</button>
+            <button class="region-pill" data-region="NORTH">North India</button>
+            <button class="region-pill" data-region="SOUTH">South India</button>
+            <button class="region-pill" data-region="EAST">East India</button>
+            <button class="region-pill" data-region="WEST">West India</button>
+            <button class="region-pill" data-region="CENTRAL">Central India</button>
+            <button class="region-pill" data-region="NORTHEAST">Northeast India</button>
+          </div>
+
+          <div style="min-width: 260px;">
+            <input type="text" id="state-search-input" class="form-input" placeholder="🔍 Search state, capital or region...">
+          </div>
+        </div>
+
+        <div id="states-cards-grid" class="state-grid">
+          <!-- Dynamically populated with 28 state cards -->
+        </div>
+      </section>
+
+      <!-- TAB 3: Points Leaderboard -->
+      <section id="tab-leaderboard" class="tab-section fade-in" style="display: none;">
+        <div class="card">
+          <div class="flex items-center justify-between" style="margin-bottom: 1.25rem;">
+            <div>
+              <h3>Live Points Standing</h3>
+              <p style="font-size: 0.85rem;">Real-time ranking of participant teams based on points evaluated and awarded by Admin.</p>
+            </div>
+          </div>
+          <div id="admin-leaderboard-container" class="table-wrapper">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: Infrastructure Market & Investments (Organiser/Judge Dashboard) -->
+      <section id="tab-market" class="tab-section fade-in" style="display: none;">
+        <!-- Top Controls Bar -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="flex items-center justify-between" style="flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+              <div class="flex items-center gap-2" style="margin-bottom: 0.35rem;">
+                <span class="badge badge-emerald">Organiser &amp; Judge Console</span>
+                <span class="badge badge-indigo">Protected Module</span>
+              </div>
+              <h3 style="font-size: 1.4rem; margin: 0;">Infrastructure Investment &amp; State Development Matrix</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+                Official adjudicator view tracking team available points, infrastructure purchases, development bonuses, and 11-category scores.
+              </p>
+            </div>
+            <div class="flex items-center gap-2" style="flex-wrap: wrap;">
+              <button class="btn btn-secondary btn-sm flex items-center gap-2" onclick="openMarketConfigModal()">
+                <span>⚙️ Configure Prices &amp; Bonuses</span>
+              </button>
+              <button class="btn btn-danger btn-sm flex items-center gap-2" onclick="confirmResetAllMarket()">
+                <span>🔄 Reset All Investments</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary KPI Stat Cards -->
+          <div class="stat-summary-grid" style="margin-bottom: 1.5rem;">
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Total Assets Commissioned</div>
+                <div class="stat-number" id="admin-market-total-assets" style="color: #34D399;">0</div>
+              </div>
+              <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">🏛️</div>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Total Points Invested</div>
+                <div class="stat-number" id="admin-market-total-invested" style="color: #38BDF8;">0</div>
+              </div>
+              <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: #38BDF8;">💎</div>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Total Dev Points Generated</div>
+                <div class="stat-number" id="admin-market-total-dev" style="color: #A78BFA;">0</div>
+              </div>
+              <div class="stat-icon" style="background: rgba(167, 139, 250, 0.15); color: #A78BFA;">📈</div>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Most Invested Sector</div>
+                <div class="stat-number" id="admin-market-top-sector" style="font-size: 1.15rem; color: var(--accent-gold);">--</div>
+              </div>
+              <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;">⭐</div>
+            </div>
+          </div>
+
+          <!-- Search & Filter Row -->
+          <div class="flex items-center justify-between" style="flex-wrap: wrap; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-subtle);">
+            <div style="flex: 1; min-width: 260px;">
+              <input type="text" id="admin-market-search-input" class="form-input" placeholder="🔍 Filter teams by name or state..." oninput="handleAdminMarketSearch(this.value)">
+            </div>
+            <div class="flex items-center gap-2">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Display:</span>
+              <button class="btn btn-secondary btn-sm admin-market-filter-btn active" data-filter="all" onclick="setAdminMarketFilter('all')">All Teams</button>
+              <button class="btn btn-secondary btn-sm admin-market-filter-btn" data-filter="with-assets" onclick="setAdminMarketFilter('with-assets')">With Purchases</button>
+              <button class="btn btn-secondary btn-sm admin-market-filter-btn" data-filter="without-assets" onclick="setAdminMarketFilter('without-assets')">Zero Purchases</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Organiser / Judge Team Cards Container -->
+        <div id="admin-market-teams-grid" class="admin-market-teams-grid">
+          <!-- Dynamically rendered team cards -->
+        </div>
+      </section>
+
+      <!-- TAB 4: Simulation Settings & Reset -->
+      <section id="tab-settings" class="tab-section fade-in" style="display: none;">
+        <div class="card" style="max-width: 700px; margin-bottom: 2rem;">
+          <h3 style="margin-bottom: 1rem;">System Maintenance</h3>
+          <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">
+            Need to restart the simulation for a fresh cohort? You can reset the database back to original defaults. All 28 Indian states will revert to default baseline criteria, and sample teams will be restored.
+          </p>
+
+          <div style="padding: 1.25rem; background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+            <h4 style="color: #FDA4AF; margin-bottom: 0.35rem;">Danger Zone: Reset Database</h4>
+            <p style="font-size: 0.85rem; color: #FECDD3; margin-bottom: 1rem;">
+              This operation immediately wipes custom state criteria edits and recreates baseline teams.
+            </p>
+            <button class="btn btn-danger btn-sm" onclick="confirmResetDatabase()">
+              ⚠️ Reset All States & Teams to Defaults
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL: Add New Team -->
+  <div id="add-team-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="flex items-center gap-2">
+          <div class="brand-icon" style="width: 32px; height: 32px; font-size: 1rem;">➕</div>
+          <h3>Provision New Team</h3>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('add-team-modal').classList.remove('active')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="new-team-name">Team Name</label>
+          <input type="text" id="new-team-name" class="form-input" placeholder="e.g. Team Chanakya, Ashoka Policy Fellows">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="new-team-password">Participant Access Password</label>
+          <input type="text" id="new-team-password" class="form-input" placeholder="Generated password">
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+            Participants will use this password alongside the Team Name to login.
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="new-team-state-select">Allocate State (from 28 States of India)</label>
+          <select id="new-team-state-select" class="form-select">
+            <!-- Dynamically populated with 28 states -->
+          </select>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+            You can allocate a state now or reallocate it later. The participant portal updates automatically.
+          </div>
+        </div>
+        <div id="add-team-error" style="color: var(--accent-rose); font-size: 0.85rem; display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('add-team-modal').classList.remove('active')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="handleCreateTeam()">Create & Allocate State</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit Team / Reallocate State -->
+  <div id="edit-team-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="flex items-center gap-2">
+          <div class="brand-icon" style="width: 32px; height: 32px; font-size: 1rem;">✏️</div>
+          <h3>Edit Team & Reallocate State</h3>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('edit-team-modal').classList.remove('active')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-team-id">
+        <div class="form-group">
+          <label class="form-label" for="edit-team-name">Team Name</label>
+          <input type="text" id="edit-team-name" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-team-password">Access Password</label>
+          <input type="text" id="edit-team-password" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-team-state-select">Allocated State</label>
+          <select id="edit-team-state-select" class="form-select">
+            <!-- Populated -->
+          </select>
+          <div style="font-size: 0.75rem; color: #38BDF8; margin-top: 0.3rem;">
+            ℹ️ Changing this state automatically updates the participant portal in real time for this team.
+          </div>
+        </div>
+        <div id="edit-team-error" style="color: var(--accent-rose); font-size: 0.85rem; display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('edit-team-modal').classList.remove('active')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="handleSaveTeamEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Award / Modify Team Points -->
+  <div id="award-points-modal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="flex items-center gap-2">
+          <div class="brand-icon" style="width: 32px; height: 32px; font-size: 1.1rem; background: linear-gradient(135deg, #F59E0B, #D97706);">🏆</div>
+          <div>
+            <h3>Award Points</h3>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              Team: <strong id="score-team-name-display" style="color: #FFFFFF;"></strong> • Current: <strong id="score-current-points-display" style="color: var(--accent-gold);">0</strong> pts
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('award-points-modal').classList.remove('active')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Points Adjustment (+ or -)</label>
+          <input type="number" id="score-points-input" class="form-input" style="font-size: 1.3rem; font-weight: 800; color: var(--accent-gold);" value="25">
+          
+          <div class="flex items-center gap-2" style="margin-top: 0.6rem; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setPointsPreset(10)">+10</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setPointsPreset(25)">+25</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setPointsPreset(50)">+50</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setPointsPreset(100)">+100</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setPointsPreset(-10)" style="color: #FDA4AF;">-10</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setPointsPreset(-25)" style="color: #FDA4AF;">-25</button>
+          </div>
+
+          <div id="score-math-preview-box" style="margin-top: 0.85rem; padding: 0.75rem 1rem; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md);">
+            <div class="flex items-center justify-between" style="font-size: 0.84rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <span style="color: var(--text-muted);">Current Evaluated:</span> 
+                <strong id="math-current-pts" style="color: #FFFFFF;">0</strong> pts
+                <span style="color: var(--accent-gold); margin: 0 0.35rem;">+</span>
+                <span style="color: var(--text-muted);">Points to Add:</span> 
+                <strong id="math-added-pts" style="color: var(--accent-gold);">+25</strong> pts
+              </div>
+              <div>
+                <span style="color: var(--text-muted);">New Evaluated Score:</span>
+                <strong id="math-projected-pts" style="color: #34D399; font-size: 1.05rem; margin-left: 0.35rem;">25</strong> pts
+              </div>
+            </div>
+            <div style="font-size: 0.73rem; color: #94A3B8; margin-top: 0.4rem; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.35rem;">
+              <span>Allocated State: <strong id="score-state-name-display" style="color: #60A5FA;">--</strong></span>
+              <span id="score-state-criteria-pts-badge" class="badge badge-gold" style="font-size: 0.72rem; padding: 0.1rem 0.45rem;">Total Criteria Points: -- pts (Unaffected)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="flex items-center justify-between" style="margin-bottom: 0.35rem;">
+            <label class="form-label" for="score-category-input" style="margin-bottom: 0;">Evaluation Category</label>
+            <span style="font-size: 0.74rem; color: #34D399; font-weight: 600;">✏️ Type any custom round or category</span>
+          </div>
+          <input 
+            type="text" 
+            id="score-category-input" 
+            class="form-input" 
+            list="category-suggestions" 
+            placeholder="Type category (e.g. Round 1: Policy Pitch, Crisis Round...)"
+            autocomplete="off"
+          >
+          <datalist id="category-suggestions">
+            <option value="Round 1: Policy Pitch & Vision">
+            <option value="Round 2: Fiscal & Budget Strategy">
+            <option value="Round 3: Crisis Management & Resilience">
+            <option value="Round 4: Rapid-Fire Q&A Defense">
+            <option value="Round 5: Final Policy Debate">
+            <option value="Policy Pitch & Vision">
+            <option value="Fiscal & Budget Allocation">
+            <option value="Crisis Management & Resilience">
+            <option value="Infrastructure Roadmap">
+            <option value="Healthcare & Public Wellness">
+            <option value="Education & Human Capital">
+            <option value="Law & Order Strategy">
+            <option value="Industrial & MSME Growth">
+            <option value="Protocol Penalty">
+          </datalist>
+
+          <div class="flex items-center gap-1" style="margin-top: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.73rem; color: var(--text-muted); margin-right: 0.2rem;">Quick Presets:</span>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.55rem; font-size: 0.74rem;" onclick="setCategoryPreset('Round 1: Policy Pitch')">Round 1</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.55rem; font-size: 0.74rem;" onclick="setCategoryPreset('Round 2: Fiscal Strategy')">Round 2</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.55rem; font-size: 0.74rem;" onclick="setCategoryPreset('Round 3: Crisis Management')">Round 3</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.55rem; font-size: 0.74rem;" onclick="setCategoryPreset('Q&A / Defense')">Q&A</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.55rem; font-size: 0.74rem; color: #FDA4AF;" onclick="setCategoryPreset('Protocol Penalty')">Penalty</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="score-reason-input">Reason / Adjudicator Remarks</label>
+          <textarea id="score-reason-input" class="form-textarea" placeholder="Explain why points were awarded or deducted. This will be shown directly in the participant's points ledger..."></textarea>
+        </div>
+
+        <div id="score-modal-error" style="color: var(--accent-rose); font-size: 0.85rem; display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('award-points-modal').classList.remove('active')">Cancel</button>
+        <button class="btn btn-success btn-sm" onclick="handleAwardPoints()">Apply Points Update</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit State 8 Criteria via Points Converter Engine -->
+  <div id="edit-state-criteria-modal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 960px; max-height: 92vh;">
+      <div class="modal-header">
+        <div>
+          <div class="flex items-center gap-2">
+            <div class="brand-icon" style="width: 34px; height: 34px; font-size: 1.1rem; background: linear-gradient(135deg, #6366F1, #06B6D4);">⚡</div>
+            <div>
+              <h3 style="font-size: 1.3rem;">
+                Configure Criteria via Points — <span id="edit-state-name-display" style="color: #60A5FA;"></span>
+              </h3>
+              <div id="edit-state-meta-display" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;"></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('edit-state-criteria-modal').classList.remove('active')">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding-top: 1rem;">
+        <!-- Quick Points Presets Bar -->
+        <div class="quick-presets-bar">
+          <div style="font-size: 0.82rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 0.35rem;">
+            <span>🎯 Quick Point Presets:</span>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="applyPointsToAllFeatures(50)">50 pts (Baseline)</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="applyPointsToAllFeatures(65)">65 pts (Developing)</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="applyPointsToAllFeatures(80)">80 pts (High Growth)</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="applyPointsToAllFeatures(95)">95 pts (Model State)</button>
+
+          <div class="flex items-center gap-2" style="margin-left: auto;">
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Custom for All:</span>
+            <input type="number" id="quick-all-points-input" class="point-number-input" style="width: 55px; font-size: 0.95rem; padding: 0.2rem;" value="75" min="0" max="100">
+            <button type="button" class="btn btn-primary btn-sm" onclick="applyCustomPointsToAll()">Set All</button>
+          </div>
+        </div>
+
+        <div style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+          <span>Enter or slide points (0–100) for each feature. The values and responsibilities convert in real time:</span>
+          <span style="color: #38BDF8; font-weight: 600;">⚡ Live Dynamic Conversion</span>
+        </div>
+
+        <!-- 8 Features Points Converter Grid -->
+        <div id="points-converter-cards-container" class="points-converter-grid">
+          <!-- Dynamically populated with 8 feature cards via admin.js -->
+        </div>
+
+        <!-- Optional Manual Text Overrides Section -->
+        <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="toggleManualOverridesSection()">
+            ⚙️ <span id="manual-overrides-btn-label">Show Advanced / Manual Text Editor</span>
+          </button>
+          
+          <div id="manual-overrides-container" style="display: none; margin-top: 1rem;">
+            <div id="criteria-edit-tabs" class="modal-tabs">
+              <!-- Tab buttons populated by admin.js -->
+            </div>
+            
+            <div style="background: rgba(8, 12, 20, 0.6); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+              <div style="margin-bottom: 1rem;">
+                <h4 id="crit-field-title" style="color: #FFFFFF; font-size: 1.05rem;"></h4>
+                <p id="crit-field-desc" style="font-size: 0.8rem; color: var(--text-secondary);"></p>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="form-group">
+                  <label class="form-label" for="crit-input-value">Primary Metric Value</label>
+                  <input type="text" id="crit-input-value" class="form-input" onchange="syncManualEditToConvertedState()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="crit-input-status">Status Pill</label>
+                  <select id="crit-input-status" class="form-select" onchange="syncManualEditToConvertedState()">
+                    <option value="Excellent">Excellent</option>
+                    <option value="Good">Good</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Needs Attention">Needs Attention</option>
+                    <option value="Critical">Critical</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="form-group">
+                  <label class="form-label" for="crit-input-metric">Metric Label</label>
+                  <input type="text" id="crit-input-metric" class="form-input" onchange="syncManualEditToConvertedState()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="crit-input-subvalue">Sub-Metric Context</label>
+                  <input type="text" id="crit-input-subvalue" class="form-input" onchange="syncManualEditToConvertedState()">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="crit-input-responsibility">Function & Responsibility Description</label>
+                <textarea id="crit-input-responsibility" class="form-textarea" style="min-height: 70px;" onchange="syncManualEditToConvertedState()"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('edit-state-criteria-modal').classList.remove('active')">Cancel</button>
+        <button class="btn btn-primary" onclick="handleSaveStateCriteria()" style="padding: 0.65rem 1.5rem;">
+          💾 Save Converted Criteria & Update Portal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Point Logs History -->
+  <div id="point-logs-modal" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <div class="flex items-center gap-2">
+          <div class="brand-icon" style="width: 32px; height: 32px; font-size: 1rem;">📜</div>
+          <div>
+            <h3>Points Ledger History</h3>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              Team: <strong id="logs-team-name" style="color: #FFFFFF;"></strong>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('point-logs-modal').classList.remove('active')">✕</button>
+      </div>
+      <div class="modal-body" style="max-height: 60vh;">
+        <div id="logs-list-container">
+          <!-- Populated -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('point-logs-modal').classList.remove('active')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Edit Market Costs & Bonuses (Admin Configuration) -->
+  <div id="modal-admin-market-config" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 900px; max-height: 88vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <div class="flex items-center gap-2">
+          <div class="brand-icon" style="width: 32px; height: 32px; font-size: 1.1rem; background: rgba(99, 102, 241, 0.2);">⚙️</div>
+          <div>
+            <h3>Infrastructure Market Configuration</h3>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+              Directly adjust prices and development bonuses for all 20 infrastructure options.
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="closeMarketConfigModal()">✕</button>
+      </div>
+
+      <div class="modal-body" style="overflow-y: auto; flex: 1; padding: 1.25rem;">
+        <div style="padding: 0.75rem 1rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.85rem; color: #C7D2FE;">
+          💡 <strong>Editable Configuration:</strong> Change costs and bonuses below and click Save. All values are automatically saved to <code style="color: #38BDF8;">data/market_config.json</code> and apply across all simulation portals immediately.
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table" style="font-size: 0.88rem;">
+            <thead>
+              <tr>
+                <th style="width: 48px; text-align: center;">Icon</th>
+                <th>Infrastructure Asset</th>
+                <th>Category</th>
+                <th style="width: 140px;">Cost (pts)</th>
+                <th style="width: 140px;">Dev Bonus (pts)</th>
+              </tr>
+            </thead>
+            <tbody id="admin-config-items-table-body">
+              <!-- Dynamically populated 20 items with inputs -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="closeMarketConfigModal()">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="handleSaveMarketConfig()">
+          💾 Save Configuration to Backend
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Reset Team Market Confirmation -->
+  <div id="modal-reset-team-market" class="modal-backdrop">
+    <div class="modal-card" style="max-width: 460px;">
+      <div class="modal-header">
+        <div class="flex items-center gap-2">
+          <div class="brand-icon" style="width: 32px; height: 32px; font-size: 1rem; background: rgba(239, 68, 68, 0.2); color: #F87171;">⚠️</div>
+          <h3 id="reset-modal-title">Reset Market Holdings</h3>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="closeResetTeamMarketModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p id="reset-modal-prompt" style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-secondary);">
+          Are you sure you want to reset infrastructure investments?
+        </p>
+        <div style="padding: 0.75rem 1rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; margin-bottom: 1rem;">
+          <label class="flex items-center gap-2" style="font-size: 0.88rem; color: #FDE68A; cursor: pointer;">
+            <input type="checkbox" id="reset-refund-checkbox" checked style="width: 18px; height: 18px; accent-color: var(--accent-gold);">
+            <span>Refund spent points back to team available balance</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="closeResetTeamMarketModal()">Cancel</button>
+        <button id="btn-confirm-market-reset" class="btn btn-danger btn-sm" onclick="executeMarketResetAction()">
+          Confirm Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/common.js?v=5.0"></script>
+  <script src="js/admin.js?v=5.0"></script>
+</body>
+</html>
